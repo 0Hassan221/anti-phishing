@@ -66,12 +66,3 @@ php artisan queue:restart
 php artisan serve
 ```
 Your backend should now be running at `http://127.0.0.1:8000`
-
-## API Endpoints
-The platform provides various API endpoints for phishing detection. You can test them using Postman or an API client. Documentation is available in the repository.
-
-## Contributing
-Feel free to submit issues and pull requests to improve this project.
-
-## License
-This project is open-source and available under the MIT License.
