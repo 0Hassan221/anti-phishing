@@ -1,3 +1,5 @@
+import { Link } from "@inertiajs/react";
+
 const Footer = () => {
     return (
         <footer className="bg-gray-700 text-white text-center py-4 text-sm">
@@ -5,15 +7,15 @@ const Footer = () => {
                 <p className="mb-2 lg:mb-0">© 2025 UntiPhishing. All rights reserved.</p>
                 
                 <nav className="flex flex-wrap justify-center space-x-4 mb-4 lg:mb-0">
-                    <a href="/" className="hover:underline">Home</a>
-                    <a href="/about" className="hover:underline">About</a>
-                    <a href="/services" className="hover:underline">Services</a>
-                    <a href="/contact" className="hover:underline">Contact</a>
+                    <Link href="/" className="hover:underline">Home</Link>
+                    <Link href="/about" className="hover:underline">About</Link>
+                    <Link href="/services" className="hover:underline">Services</Link>
+                    <Link href="/contact" className="hover:underline">Contact</Link>
                 </nav>
 
                 <p className="text-center">
-                    <a href="/privacy" className="hover:underline">Privacy Policy</a> | 
-                    <a href="/terms" className="hover:underline"> Terms of Service</a>
+                    <Link href="/privacy" className="hover:underline">Privacy Policy</Link> | 
+                    <Link href="/terms" className="hover:underline"> Terms of Service</Link>
                 </p>
             </div>
         </footer>

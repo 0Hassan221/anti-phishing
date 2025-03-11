@@ -12,7 +12,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -23,9 +23,18 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-//**************/
-Route::get('{any}', function () {
-    return view('app'); // تأكد أن لديك ملف `resources/views/app.blade.php`
-})->where('any', '.*');
+
+
+
+Route::get('/services', function () {
+    return Inertia::render('Services');
+})->name('service');
+Route::get('/about', function () {
+    return Inertia::render('AboutUs');
+})->name('about');
+Route::get('/contact', function () {
+    return Inertia::render('ContactUs');
+})->name('contact');
+
 
 require __DIR__.'/auth.php';

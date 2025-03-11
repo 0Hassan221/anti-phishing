@@ -1,14 +1,15 @@
-import Footer from '@/Components/Footer';
+import { Head } from '@inertiajs/react';
+import Header from '@/Components/Header';
 import Navbar from '@/Components/Navbar';
-import { Head, Link } from '@inertiajs/react';
-import Header from './home/Header';
-import Services from './home/Services';
-import AboutUs from './home/AboutUs';
-import CTA from './home/CTA';
-import ContactUs from './home/ContactUs';
+import Services from '@/Pages/Services'; 
+import AboutUs from '@/Pages/AboutUs';
+import Footer from '@/Components/Footer';
+import ContactUs from '@/Pages/ContactUs';
+import CTA from '@/Components/CTA';
 
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
     const handleImageError = () => {
+        console.log("Image failed to load");
         document
             .getElementById('screenshot-container')
             ?.classList.add('!hidden');
@@ -19,15 +20,29 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
         document.getElementById('background')?.classList.add('!hidden');
     };
 
+    console.log("Welcome component rendered");
+
     return (
         <>
-            <Navbar/>
-            <Header/>
-            <Services/>
-            <AboutUs/>
-            <CTA/>
-            <ContactUs/>
-            <Footer/>
+            <Head title="Anti Phishing" />
+            <Navbar />
+           
+              
+              
+                    
+                        <Header auth={auth} />
+                        <main>
+                            <Services />
+                            <AboutUs />
+                            <ContactUs />
+                            <CTA/>
+                            <Footer />
+
+                        </main>
+                        
+                 
+       
+          
         </>
     );
 }

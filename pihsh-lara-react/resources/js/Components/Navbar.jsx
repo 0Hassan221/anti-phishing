@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@inertiajs/react";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -77,7 +77,7 @@ const Navbar = () => {
                             </div>
                         </div>
                         <Link 
-                            to="/" 
+                            href="/" 
                             className="text-2xl font-bold text-transparent bg-clip-text bg-[linear-gradient(90deg,_#fff_20%,_#7dd3fc_50%,_#fff_80%)] bg-[length:200%_auto] hover:animate-[textShine_2s_linear_infinite] transition-all"
                         >
                             Anti<span className="font-extrabold">Phishing</span>
@@ -86,7 +86,7 @@ const Navbar = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex space-x-10 items-center">
-                        <Link to="/" className="relative text-gray-300 hover:text-cyan-400 group transition-colors duration-300">
+                        <Link href="/" className="relative text-gray-300 hover:text-cyan-400 group transition-colors duration-300">
                             Home
                             <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-cyan-400 group-hover:w-full transition-all duration-300 ease-out"></span>
                         </Link>
@@ -120,7 +120,7 @@ const Navbar = () => {
                             userMenuOpen ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-2 scale-95"
                         }`}>
                             <div className="p-2 space-y-1">
-                                <UserMenuItem to="/profile" icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                <UserMenuItem href={route('dashboard')} icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                                     Profile
                                 </UserMenuItem>
                                 <UserMenuItem to="/settings" icon="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z">
@@ -199,8 +199,8 @@ const Navbar = () => {
     );
 };
 
-const UserMenuItem = ({ to, icon, children }) => (
-    <Link to={to} className="flex items-center px-4 py-3 text-gray-300 hover:bg-cyan-500/10 rounded-lg transition-colors">
+const UserMenuItem = ({ href, icon, children }) => (
+    <Link href={href} className="flex items-center px-4 py-3 text-gray-300 hover:bg-cyan-500/10 rounded-lg transition-colors">
         <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
         </svg>
