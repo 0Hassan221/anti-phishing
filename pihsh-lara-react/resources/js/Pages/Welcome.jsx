@@ -1,11 +1,15 @@
 import { Head } from '@inertiajs/react';
 import Header from '@/Components/Header';
 import Navbar from '@/Components/Navbar';
-import Services from '@/Pages/Services'; 
+import Services from '@/Pages/Services';
 import AboutUs from '@/Pages/AboutUs';
 import Footer from '@/Components/Footer';
 import ContactUs from '@/Pages/ContactUs';
 import CTA from '@/Components/CTA';
+import PhishingStats from './PhishingStats';
+import WhyMatters from './WhyMatters';
+import LatestPhishingTrends from './LatestPhishingTrends';
+import PhishingAwarenessQuiz from './PhishingAwarenessQuiz';
 
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
     const handleImageError = () => {
@@ -26,23 +30,27 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
         <>
             <Head title="Anti Phishing" />
             <Navbar />
-           
-              
-              
-                    
-                        <Header auth={auth} />
-                        <main>
-                            <Services />
-                            <AboutUs />
-                            <ContactUs />
-                            <CTA/>
-                            <Footer />
 
-                        </main>
-                        
-                 
-       
-          
+
+
+
+            <Header auth={auth} />
+            <main>
+                <Services />
+                <AboutUs />
+                <WhyMatters/>
+                <PhishingStats/>
+                <LatestPhishingTrends/>
+                <PhishingAwarenessQuiz/>
+                <CTA />
+                <ContactUs />
+                <Footer />
+
+            </main>
+
+
+
+
         </>
     );
 }

@@ -1,27 +1,31 @@
-import Navbar from "D:/antiphishing platform/Anti_phishing_platform/pihsh-lara-react/resources/js/Components/Navbar.jsx";
-import Footer from "D:/antiphishing platform/Anti_phishing_platform/pihsh-lara-react/resources/js/Components/Footer.jsx";
-import { useState, useEffect } from "react";
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 import CountUp from 'react-countup';
 
-function Profile() {
+export default function Profile({ auth }) { // auth هو البيانات اللي بتيجي من Inertia
+    const { props } = usePage(); // نجيب البيانات كلها من الصفحة
+    const user = auth.user; // بيانات المستخدم من الـ auth
+
+    // البيانات دي المفروض تيجي من الـ Backend، لكن لو مش موجودة هنستخدم افتراضي
     const [userData, setUserData] = useState({
-        name: "Sarah Johnson",
-        role: "Security Analyst",
-        email: "s.johnson@cybersec.org",
-        lastLogin: "2024-02-15 14:30 UTC",
-        twoFactorEnabled: true,
-        phishingStats: {
+        name: user.name || "Sarah Johnson",
+        role: props.role || "Security Analyst",
+        email: user.email || "s.johnson@cybersec.org",
+        lastLogin: props.lastLogin || "2024-02-15 14:30 UTC",
+        twoFactorEnabled: props.twoFactorEnabled || true,
+        phishingStats: props.phishingStats || {
             detected: 42,
             reported: 35,
             trainingCompleted: 8,
             simulationsParticipated: 5,
             successRate: "85%"
         },
-        recentActivity: [
+        recentActivity: props.recentActivity || [
             { date: "2024-02-15", action: "Password changed", location: "New York, US" },
             { date: "2024-02-14", action: "2FA enabled", location: "London, UK" }
         ],
-        profilePhoto: "assets/person.jpg"
+        profilePhoto: props.profilePhoto || "assets/person.jpg"
     });
 
     const [startAnimations, setStartAnimations] = useState(false);
@@ -35,13 +39,18 @@ function Profile() {
     };
 
     return (
-        <>
-            <Navbar/>
-            <br />
-            <br />
-            <br />
-            <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-4xl mx-auto">
+        <AuthenticatedLayout
+            user={auth.user} // بنجيب بيانات المستخدم من الـ auth
+            header={
+                <h2 className="text-xl font-semibold leading-tight text-blue-900">
+                    Security Profile
+                </h2>
+            }
+        >
+            <Head title="Security Profile" />
+
+            <div className="py-12">
+                <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
                     <div className="mb-8 text-center">
                         <h1 className="text-3xl font-bold text-blue-900 mb-2">Security Profile</h1>
                         <p className="text-gray-600">Account Overview & Security Settings</p>
@@ -142,9 +151,6 @@ function Profile() {
                     </div>
                 </div>
             </div>
-            <Footer/>
-        </>
+        </AuthenticatedLayout>
     );
 }
-
-export default Profile;

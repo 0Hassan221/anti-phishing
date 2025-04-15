@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 function Header() {
+    console.log('header rendered')
     return (
         <>
             <div id='header' className="mx-auto lg:w-[85%] lg:h-auto sm:h-auto">

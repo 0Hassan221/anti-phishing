@@ -1,155 +1,193 @@
 import { motion } from 'framer-motion';
 
 function AboutUs() {
+    // Animation Variants
     const containerVariants = {
-        hidden: { opacity: 0 },
+        hidden: { opacity: 0, y: 50 },
         visible: {
             opacity: 1,
-            transition: {
-                staggerChildren: 0.3,
-                delayChildren: 0.2
-            }
-        }
+            y: 0,
+            transition: { duration: 0.8, ease: 'easeOut', staggerChildren: 0.2 },
+        },
     };
 
     const textVariants = {
-        hidden: { x: 100, opacity: 0 },
+        hidden: { opacity: 0, x: -50 },
         visible: {
-            x: 0,
             opacity: 1,
-            transition: { type: 'spring', stiffness: 120, duration: 0.8 }
-        }
+            x: 0,
+            transition: { type: 'spring', stiffness: 150, damping: 15 },
+        },
     };
 
     const itemVariants = {
-        hidden: { y: 50, opacity: 0 },
+        hidden: { opacity: 0, y: 30 },
         visible: {
-            y: 0,
             opacity: 1,
-            transition: { type: 'spring', stiffness: 100, duration: 0.6 }
-        }
+            y: 0,
+            transition: { type: 'spring', stiffness: 120, damping: 20 },
+        },
+    };
+
+    const glowVariants = {
+        animate: {
+            boxShadow: [
+                '0 0 10px rgba(96, 165, 250, 0.3)',
+                '0 0 20px rgba(96, 165, 250, 0.5)',
+                '0 0 10px rgba(96, 165, 250, 0.3)',
+            ],
+        },
+        transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
     };
 
     return (
-        <section id="about" className="bg-gradient-to-br from-blue-900 to-blue-800 py-16 px-4 sm:px-6 lg:py-24 relative overflow-hidden">
-            {/* Animated background particles */}
-            <motion.div 
-                className="absolute inset-0 opacity-5"
+        <section
+            id="about"
+            className="relative py-16 px-4 sm:px-6 lg:py-24 overflow-hidden"
+            style={{
+                background: 'linear-gradient(135deg, #1e3a8a, #1e1b4b, #0f172a)',
+            }}
+        >
+            {/* Enhanced Background with Holographic Particles */}
+            <motion.div
+                className="absolute inset-0 opacity-20 pointer-events-none"
                 style={{
-                    backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)',
-                    backgroundSize: '40px 40px',
-                    color: '#bfdbfe'
+                    backgroundImage: `
+            radial-gradient(circle at 10% 20%, #60a5fa 2px, transparent 3px),
+            radial-gradient(circle at 90% 80%, #a78bfa 2px, transparent 3px)
+          `,
+                    backgroundSize: '60px 60px',
                 }}
                 animate={{
-                    backgroundPosition: ['0% 0%', '100% 100%'],
+                    scale: [1, 1.03, 1],
+                    backgroundPosition: ['0% 0%', '20% 20%', '0% 0%'],
                 }}
-                transition={{
-                    duration: 20,
-                    repeat: Infinity,
-                    repeatType: 'mirror'
-                }}
+                transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
             />
-            
-            <motion.div 
+            {/* Subtle Floating Orbs */}
+            <motion.div
+                className="absolute w-40 h-40 bg-cyan-400/20 rounded-full filter blur-3xl top-10 left-10"
+                animate={{ y: [0, -20, 0], opacity: [0.2, 0.4, 0.2] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <motion.div
+                className="absolute w-60 h-60 bg-purple-400/20 rounded-full filter blur-3xl bottom-20 right-20"
+                animate={{ y: [0, 20, 0], opacity: [0.2, 0.3, 0.2] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+            />
+
+            <motion.div
                 className="max-w-7xl mx-auto relative z-10"
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
+                viewport={{ once: true, amount: 0.3 }}
                 variants={containerVariants}
             >
-                <div className="flex flex-col lg:flex-row items-center gap-8 xl:gap-12">
-                    {/* Image Section - Static */}
-                    <div className="w-full lg:w-4/12 xl:w-1/3 relative">
-                        <div className="relative rounded-xl lg:rounded-2xl overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-blue-900/20 z-10"/>
-                            <img 
-                                src="/assets/urlScanning.png" 
+                <div className="flex flex-col lg:flex-row items-center gap-12">
+                    {/* Enhanced Image Section */}
+                    <motion.div
+                        className="w-full lg:w-5/12 relative"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1, ease: 'easeOut' }}
+                    >
+                        <motion.div
+                            className="relative rounded-2xl overflow-hidden border border-cyan-500/30"
+                            whileHover={{ scale: 1.02, rotate: 1 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <motion.div
+                                className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 z-10"
+                                variants={glowVariants}
+                                animate="animate"
+                            />
+                            <img
+                                src="/assets/about.jpg"
                                 alt="Phishing protection services interface"
-                                className="w-full h-auto object-cover aspect-video lg:aspect-square"
+                                className="w-full h-auto object-cover aspect-square"
                                 loading="lazy"
                             />
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
 
-                    {/* Content Section - Animated */}
-                    <motion.div 
-                        className="w-full lg:w-8/12 xl:w-2/3 space-y-6 sm:space-y-8"
-                        variants={containerVariants}
-                    >
-                        <motion.header className="space-y-3" variants={textVariants}>
-                            <motion.h2 
-                                className="text-3xl sm:text-4xl xl:text-5xl font-bold text-white leading-tight tracking-tight"
-                                initial={{ opacity: 0, y: 30 }}
+                    {/* Enhanced Content Section */}
+                    <motion.div className="w-full lg:w-7/12 space-y-8" variants={containerVariants}>
+                        <motion.header className="space-y-4" variants={textVariants}>
+                            <motion.h2
+                                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-200 to-purple-300 leading-tight tracking-tight"
+                                initial={{ opacity: 0, y: 40 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.8 }}
+                                transition={{ duration: 1, ease: 'easeOut' }}
                             >
-                                <span className="bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
-                                    Complete Phishing Protection
-                                </span>
+                                Ultimate Phishing Defense
                             </motion.h2>
-                            <motion.div 
-                                className="w-16 h-1 bg-blue-400 rounded-full"
+                            <motion.div
+                                className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full"
                                 initial={{ scaleX: 0 }}
                                 whileInView={{ scaleX: 1 }}
-                                transition={{ duration: 1, delay: 0.3 }}
+                                transition={{ duration: 0.8, type: 'spring', bounce: 0.5 }}
                             />
                         </motion.header>
 
-                        <motion.div className="space-y-6" variants={containerVariants}>
-                            <motion.p 
-                                className="text-base sm:text-lg xl:text-xl text-blue-100 leading-relaxed"
-                                variants={textVariants}
-                            >
-                                Our multi-layered defense system combines advanced technology with user education to combat phishing threats across all digital channels.
-                            </motion.p>
+                        <motion.p
+                            className="text-lg lg:text-xl text-blue-100/90 leading-relaxed max-w-2xl"
+                            variants={textVariants}
+                        >
+                            Harness the power of AI-driven security and immersive training to shield your digital world from phishing threats.
+                        </motion.p>
 
-                            <motion.div className="grid gap-5 sm:gap-6">
-                                {[
-                                    {
-                                        icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>,
-                                        title: "Real-Time Scanning",
-                                        text: "24/7 monitoring of URLs & emails with AI-powered threat detection and instant alerts"
-                                    },
-                                    {
-                                        icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>,
-                                        title: "Smart Training Modules",
-                                        text: "Interactive simulations and personalized learning paths to enhance threat recognition skills"
-                                    },
-                                    {
-                                        icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>,
-                                        title: "Browser Shield",
-                                        text: "Lightweight Chrome extension providing real-time protection without compromising browsing speed"
-                                    }
-                                ].map((item, index) => (
-                                    <motion.div 
-                                        key={index}
-                                        className="flex items-start gap-4 p-4 bg-blue-800/30 rounded-lg backdrop-blur-sm hover:bg-blue-700/20 transition-all duration-300 cursor-pointer"
-                                        variants={itemVariants}
-                                        whileHover={{ scale: 1.02 }}
+                        <motion.div className="grid gap-6" variants={containerVariants}>
+                            {[
+                                {
+                                    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />,
+                                    title: "Real-Time Threat Analysis",
+                                    text: "AI-powered scanning with instant threat neutralization across all channels.",
+                                },
+                                {
+                                    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />,
+                                    title: "Adaptive Learning Hub",
+                                    text: "Gamified training with real-world simulations to master phishing defense.",
+                                },
+                                {
+                                    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />,
+                                    title: "Cyber Shield Extension",
+                                    text: "Seamless browser protection with zero performance impact.",
+                                },
+                            ].map((item, index) => (
+                                <motion.div
+                                    key={index}
+                                    className="flex items-start gap-5 p-5 bg-blue-900/20 rounded-xl border border-cyan-500/20 backdrop-blur-md"
+                                    variants={itemVariants}
+                                    whileHover={{
+                                        scale: 1.03,
+                                        borderColor: 'rgba(96, 165, 250, 0.5)',
+                                        backgroundColor: 'rgba(30, 58, 138, 0.3)',
+                                    }}
+                                    whileTap={{ scale: 0.98 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <motion.div
+                                        className="mt-1 flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-400 flex items-center justify-center"
+                                        whileHover={{ rotate: [0, 15, -15, 0], scale: 1.1 }}
+                                        transition={{ duration: 0.6 }}
                                     >
-                                        <motion.div 
-                                            className="mt-1 flex-shrink-0 w-7 h-7 rounded-md bg-blue-400 flex items-center justify-center"
-                                            whileHover={{ rotate: 360 }}
-                                            transition={{ duration: 0.5 }}
-                                        >
-                                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                {item.icon}
-                                            </svg>
-                                        </motion.div>
-                                        <div>
-                                            <motion.h3 
-                                                className="text-lg font-semibold text-blue-200 mb-1.5"
-                                                whileHover={{ x: 5 }}
-                                            >
-                                                {item.title}
-                                            </motion.h3>
-                                            <motion.p className="text-sm text-blue-100">
-                                                {item.text}
-                                            </motion.p>
-                                        </div>
+                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            {item.icon}
+                                        </svg>
                                     </motion.div>
-                                ))}
-                            </motion.div>
+                                    <div>
+                                        <motion.h3
+                                            className="text-xl font-semibold text-cyan-200 mb-2"
+                                            whileHover={{ x: 5, color: '#e0f2fe' }}
+                                        >
+                                            {item.title}
+                                        </motion.h3>
+                                        <motion.p className="text-sm text-blue-100/80">
+                                            {item.text}
+                                        </motion.p>
+                                    </div>
+                                </motion.div>
+                            ))}
                         </motion.div>
                     </motion.div>
                 </div>
