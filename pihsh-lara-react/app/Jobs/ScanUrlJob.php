@@ -66,7 +66,11 @@ class ScanUrlJob implements ShouldQueue
             Cache::put($statusKey, [
                 'status' => 'processing',
                 'progress' => 10,
-                'message' => 'Starting URL analysis'
+                'message' => 'Starting URL analysis',
+                'details' => [
+                    'url' => $this->url,
+                    'started_at' => now()->toDateTimeString()
+                ]
             ], 3600);
             
             // Check if we already have cached results
@@ -78,7 +82,12 @@ class ScanUrlJob implements ShouldQueue
                     'progress' => 100,
                     'message' => 'Analysis completed (from cache)',
                     'results' => $cachedResults,
-                    'fromCache' => true
+                    'fromCache' => true,
+                    'details' => [
+                        'url' => $this->url,
+                        'completed_at' => now()->toDateTimeString(),
+                        'cached_at' => $cachedResults['scanned_at'] ?? null
+                    ]
                 ], 3600);
                 
                 return;
@@ -88,7 +97,11 @@ class ScanUrlJob implements ShouldQueue
             Cache::put($statusKey, [
                 'status' => 'processing',
                 'progress' => 20,
-                'message' => 'Submitting URL to VirusTotal'
+                'message' => 'Submitting URL to VirusTotal',
+                'details' => [
+                    'url' => $this->url,
+                    'stage' => 'submission'
+                ]
             ], 3600);
             
             // Submit URL for scanning
@@ -96,14 +109,19 @@ class ScanUrlJob implements ShouldQueue
             $analysisId = $submitResponse['data']['id'] ?? null;
             
             if (!$analysisId) {
-                throw new \Exception('Failed to get analysis ID');
+                throw new \Exception('Failed to get analysis ID from VirusTotal');
             }
             
             // Update status
             Cache::put($statusKey, [
                 'status' => 'processing',
                 'progress' => 50,
-                'message' => 'URL submitted, retrieving analysis'
+                'message' => 'URL submitted, retrieving analysis',
+                'details' => [
+                    'url' => $this->url,
+                    'analysis_id' => $analysisId,
+                    'stage' => 'analysis'
+                ]
             ], 3600);
             
             // Wait a few seconds to allow analysis to begin
@@ -122,7 +140,13 @@ class ScanUrlJob implements ShouldQueue
                 Cache::put($statusKey, [
                     'status' => 'processing',
                     'progress' => 60,
-                    'message' => 'Analysis in progress, waiting for results'
+                    'message' => 'Analysis in progress, waiting for results',
+                    'details' => [
+                        'url' => $this->url,
+                        'analysis_id' => $analysisId,
+                        'stage' => 'waiting',
+                        'attempt' => $this->attempts()
+                    ]
                 ], 3600);
                 
                 return;
@@ -132,7 +156,8 @@ class ScanUrlJob implements ShouldQueue
             $processedResults = $virusTotalService->processResults($results, [
                 'url' => $this->url,
                 'scan_id' => $analysisId,
-                'job_id' => $this->jobId
+                'job_id' => $this->jobId,
+                'user_id' => $this->userId
             ]);
             
             $virusTotalService->cacheResults($cacheKey, $processedResults);
@@ -143,11 +168,16 @@ class ScanUrlJob implements ShouldQueue
                 'progress' => 100,
                 'message' => 'Analysis completed successfully',
                 'results' => $processedResults,
-                'fromCache' => false
+                'fromCache' => false,
+                'details' => [
+                    'url' => $this->url,
+                    'analysis_id' => $analysisId,
+                    'completed_at' => now()->toDateTimeString(),
+                    'threat_level' => $processedResults['threat_level'],
+                    'is_malicious' => $processedResults['is_malicious'],
+                    'is_suspicious' => $processedResults['is_suspicious']
+                ]
             ], 3600);
-            
-            // Broadcast completion event (for real-time updates) - this would typically use Laravel Echo
-            // Event::dispatch(new ScanCompleted($this->jobId, $processedResults));
             
         } catch (\Exception $e) {
             Log::error('URL scanning job failed', [
@@ -160,7 +190,12 @@ class ScanUrlJob implements ShouldQueue
             Cache::put($statusKey, [
                 'status' => 'failed',
                 'progress' => 100,
-                'message' => 'Analysis failed: ' . $e->getMessage()
+                'message' => 'Analysis failed: ' . $e->getMessage(),
+                'details' => [
+                    'url' => $this->url,
+                    'error' => $e->getMessage(),
+                    'failed_at' => now()->toDateTimeString()
+                ]
             ], 3600);
             
             // If we should retry

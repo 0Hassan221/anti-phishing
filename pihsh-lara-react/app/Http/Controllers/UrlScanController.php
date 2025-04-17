@@ -34,13 +34,14 @@ class UrlScanController extends Controller
         $url = $request->input('url');
         $userId = $request->user() ? $request->user()->id : $request->ip();
         
-        // Implement rate limiting - 20 requests per minute per user (allowing more since jobs are queued)
+        // Implement rate limiting - 20 requests per minute per user
         if (RateLimiter::tooManyAttempts('url-scan:'.$userId, 20)) {
             $seconds = RateLimiter::availableIn('url-scan:'.$userId);
             
             return response()->json([
                 'success' => false,
                 'message' => "Rate limit exceeded. Please try again after {$seconds} seconds.",
+                'retry_after' => $seconds
             ], 429);
         }
         
@@ -60,7 +61,12 @@ class UrlScanController extends Controller
                 'jobId' => $jobId,
                 'results' => $cachedResults,
                 'fromCache' => true,
-                'completed' => true
+                'completed' => true,
+                'details' => [
+                    'url' => $url,
+                    'cached_at' => $cachedResults['scanned_at'] ?? null,
+                    'threat_level' => $cachedResults['threat_level'] ?? 'unknown'
+                ]
             ]);
         }
         
@@ -70,7 +76,11 @@ class UrlScanController extends Controller
             Cache::put('scan-status:' . $jobId, [
                 'status' => 'queued',
                 'progress' => 0,
-                'message' => 'Analysis queued, starting soon'
+                'message' => 'Analysis queued, starting soon',
+                'details' => [
+                    'url' => $url,
+                    'queued_at' => now()->toDateTimeString()
+                ]
             ], 3600);
             
             // Dispatch job to background queue
@@ -80,7 +90,11 @@ class UrlScanController extends Controller
                 'success' => true,
                 'message' => 'URL analysis queued',
                 'jobId' => $jobId,
-                'completed' => false
+                'completed' => false,
+                'details' => [
+                    'url' => $url,
+                    'queued_at' => now()->toDateTimeString()
+                ]
             ]);
             
         } catch (\Exception $e) {
@@ -89,7 +103,12 @@ class UrlScanController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to queue URL analysis',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'details' => [
+                    'url' => $url,
+                    'error' => $e->getMessage(),
+                    'failed_at' => now()->toDateTimeString()
+                ]
             ], 500);
         }
     }
@@ -109,17 +128,27 @@ class UrlScanController extends Controller
         if (!Cache::has($statusKey)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Job not found or expired'
+                'message' => 'Job not found or expired',
+                'details' => [
+                    'job_id' => $jobId,
+                    'error' => 'Job not found or expired'
+                ]
             ], 404);
         }
         
         $status = Cache::get($statusKey);
         $completed = in_array($status['status'] ?? '', ['completed', 'failed']);
         
+        // If completed, include the full results
+        if ($completed && isset($status['results'])) {
+            $status['results'] = $status['results'];
+        }
+        
         return response()->json([
             'success' => true,
             'completed' => $completed,
-            'status' => $status
+            'status' => $status,
+            'details' => $status['details'] ?? []
         ]);
     }
     

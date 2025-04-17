@@ -1,0 +1,130 @@
+import React from 'react';
+import { Head } from '@inertiajs/react';
+import AdminLayout from '@/Layouts/AdminLayout';
+import { Link } from '@inertiajs/react';
+import { EyeIcon, TrashIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+
+export default function UrlScans({ scans, stats }) {
+    return (
+        <AdminLayout>
+            <Head title="URL Scans Management" />
+
+            <div className="py-12">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="bg-gray-800 overflow-hidden shadow-xl sm:rounded-xl border border-gray-700">
+                        <div className="p-6 text-gray-300">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-2xl font-bold text-white">URL Scans Management</h2>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        placeholder="Search scans..."
+                                        className="bg-gray-700 text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                                    />
+                                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
+                                </div>
+                            </div>
+
+                            {/* Stats Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                                <div className="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+                                    <h3 className="text-lg font-medium text-gray-300">Total Scans</h3>
+                                    <p className="text-3xl font-bold text-white">{stats.total}</p>
+                                </div>
+                                <div className="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+                                    <h3 className="text-lg font-medium text-gray-300">Malicious</h3>
+                                    <p className="text-3xl font-bold text-red-400">{stats.malicious}</p>
+                                </div>
+                                <div className="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+                                    <h3 className="text-lg font-medium text-gray-300">Suspicious</h3>
+                                    <p className="text-3xl font-bold text-yellow-400">{stats.suspicious}</p>
+                                </div>
+                                <div className="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+                                    <h3 className="text-lg font-medium text-gray-300">Safe</h3>
+                                    <p className="text-3xl font-bold text-green-400">{stats.safe}</p>
+                                </div>
+                            </div>
+
+                            {/* Scans Table */}
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-700">
+                                    <thead className="bg-gray-700/50">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">URL</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">User</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-gray-800 divide-y divide-gray-700">
+                                        {scans.data.map((scan) => (
+                                            <tr key={scan.id} className="hover:bg-gray-700/50">
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm font-medium text-gray-300">{scan.url}</div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm text-gray-400">{scan.user.name}</div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                        scan.is_malicious
+                                                            ? 'bg-red-900/50 text-red-300'
+                                                            : scan.is_suspicious
+                                                            ? 'bg-yellow-900/50 text-yellow-300'
+                                                            : 'bg-green-900/50 text-green-300'
+                                                    }`}>
+                                                        {scan.is_malicious ? 'Malicious' : scan.is_suspicious ? 'Suspicious' : 'Safe'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                                    {new Date(scan.created_at).toLocaleDateString()}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                    <Link
+                                                        href={route('admin.scans.urls.show', scan.id)}
+                                                        className="text-cyan-400 hover:text-cyan-300 mr-4"
+                                                    >
+                                                        <EyeIcon className="h-5 w-5 inline" />
+                                                    </Link>
+                                                    <Link
+                                                        href={route('admin.scans.urls.destroy', scan.id)}
+                                                        method="delete"
+                                                        as="button"
+                                                        className="text-red-400 hover:text-red-300"
+                                                    >
+                                                        <TrashIcon className="h-5 w-5 inline" />
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Pagination */}
+                            <div className="mt-6">
+                                {scans.links && (
+                                    <div className="flex justify-center">
+                                        {scans.links.map((link, index) => (
+                                            <Link
+                                                key={index}
+                                                href={link.url || '#'}
+                                                className={`px-4 py-2 mx-1 rounded-md ${
+                                                    link.active
+                                                        ? 'bg-cyan-600 text-white'
+                                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                                }`}
+                                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </AdminLayout>
+    );
+} 

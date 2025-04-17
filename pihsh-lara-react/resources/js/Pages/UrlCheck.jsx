@@ -172,22 +172,46 @@ export default function UrlCheck() {
     const handleScanResults = (scanResults) => {
         const maliciousEngines = scanResults.stats.malicious || 0;
         const suspiciousEngines = scanResults.stats.suspicious || 0;
-        const totalEngines = Object.values(scanResults.stats).reduce((a, b) => a + b, 0);
+        const totalEngines = scanResults.stats.total_engines || 0;
         
         if (maliciousEngines > 0) {
             setResult({
                 status: 'unsafe',
-                message: `Alert: Potential phishing threat detected! ${maliciousEngines} security vendors flagged this URL as malicious.`
+                message: `Alert: Potential phishing threat detected! ${maliciousEngines} security vendors flagged this URL as malicious.`,
+                details: {
+                    threatLevel: scanResults.threat_level,
+                    reputation: scanResults.reputation,
+                    categories: scanResults.categories,
+                    engineResults: scanResults.engine_results,
+                    lastAnalysisDate: scanResults.last_analysis_date,
+                    stats: scanResults.stats
+                }
             });
         } else if (suspiciousEngines > 0) {
             setResult({
                 status: 'warning',
-                message: `Caution: ${suspiciousEngines} security vendors flagged this URL as suspicious.`
+                message: `Caution: ${suspiciousEngines} security vendors flagged this URL as suspicious.`,
+                details: {
+                    threatLevel: scanResults.threat_level,
+                    reputation: scanResults.reputation,
+                    categories: scanResults.categories,
+                    engineResults: scanResults.engine_results,
+                    lastAnalysisDate: scanResults.last_analysis_date,
+                    stats: scanResults.stats
+                }
             });
         } else {
             setResult({
                 status: 'safe',
-                message: `This URL appears to be safe. No security vendors flagged this URL out of ${totalEngines} checked.`
+                message: `This URL appears to be safe. No security vendors flagged this URL out of ${totalEngines} checked.`,
+                details: {
+                    threatLevel: scanResults.threat_level,
+                    reputation: scanResults.reputation,
+                    categories: scanResults.categories,
+                    engineResults: scanResults.engine_results,
+                    lastAnalysisDate: scanResults.last_analysis_date,
+                    stats: scanResults.stats
+                }
             });
         }
     };
@@ -348,6 +372,9 @@ export default function UrlCheck() {
                         {/* Result Display */}
                         {result && (
                             <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                variants={resultVariants}
                                 className={`mt-8 p-6 rounded-xl border shadow-md ${
                                     result.status === 'safe'
                                         ? 'bg-green-900/30 border-green-500/50'
@@ -357,9 +384,6 @@ export default function UrlCheck() {
                                         ? 'bg-yellow-900/30 border-yellow-500/50'
                                         : 'bg-gray-700/30 border-gray-500/50'
                                 }`}
-                                initial="hidden"
-                                animate="visible"
-                                variants={resultVariants}
                             >
                                 <div className="flex items-center space-x-4">
                                     <svg
@@ -417,6 +441,151 @@ export default function UrlCheck() {
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Detailed Scan Results */}
+                                {result.details && (
+                                    <div className="mt-6 space-y-6">
+                                        {/* Basic Info */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="bg-gray-800/50 p-4 rounded-lg">
+                                                <h3 className="text-lg font-semibold text-cyan-300 mb-2">Threat Level</h3>
+                                                <p className="text-xl font-bold capitalize">{result.details.threatLevel}</p>
+                                            </div>
+                                            <div className="bg-gray-800/50 p-4 rounded-lg">
+                                                <h3 className="text-lg font-semibold text-cyan-300 mb-2">Reputation Score</h3>
+                                                <p className="text-xl font-bold">{result.details.reputation}</p>
+                                            </div>
+                                        </div>
+
+                                        {/* Categories */}
+                                        {result.details.categories && Object.keys(result.details.categories).length > 0 && (
+                                            <div className="bg-gray-800/50 p-4 rounded-lg">
+                                                <h3 className="text-lg font-semibold text-cyan-300 mb-2">Categories</h3>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {Object.entries(result.details.categories).map(([category, value]) => (
+                                                        <span
+                                                            key={category}
+                                                            className="px-3 py-1 bg-cyan-900/50 text-cyan-300 rounded-full text-sm"
+                                                        >
+                                                            {category}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Scan Statistics */}
+                                        <div className="bg-gray-800/50 p-4 rounded-lg">
+                                            <h3 className="text-lg font-semibold text-cyan-300 mb-4">Scan Statistics</h3>
+                                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                                <div className="text-center">
+                                                    <p className="text-2xl font-bold">{result.details.stats.total_engines}</p>
+                                                    <p className="text-sm text-gray-400">Total Engines</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-2xl font-bold text-red-400">{result.details.stats.malicious}</p>
+                                                    <p className="text-sm text-gray-400">Malicious</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-2xl font-bold text-yellow-400">{result.details.stats.suspicious}</p>
+                                                    <p className="text-sm text-gray-400">Suspicious</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-2xl font-bold text-green-400">{result.details.stats.harmless}</p>
+                                                    <p className="text-sm text-gray-400">Harmless</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-2xl font-bold">{result.details.stats.undetected}</p>
+                                                    <p className="text-sm text-gray-400">Undetected</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-2xl font-bold">{result.details.stats.timeout}</p>
+                                                    <p className="text-sm text-gray-400">Timeout</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Engine Results */}
+                                        {result.details.engineResults && Object.keys(result.details.engineResults).length > 0 && (
+                                            <div className="bg-gray-800/50 p-4 rounded-lg">
+                                                <h3 className="text-lg font-semibold text-cyan-300 mb-4">Detailed Engine Results</h3>
+                                                <div className="space-y-3">
+                                                    {Object.entries(result.details.engineResults).map(([engine, data]) => (
+                                                        <div
+                                                            key={engine}
+                                                            className={`p-4 rounded-lg ${
+                                                                data.category === 'malicious'
+                                                                    ? 'bg-red-900/30 border border-red-500/50'
+                                                                    : data.category === 'suspicious'
+                                                                    ? 'bg-yellow-900/30 border border-yellow-500/50'
+                                                                    : 'bg-green-900/30 border border-green-500/50'
+                                                            }`}
+                                                        >
+                                                            <div className="flex justify-between items-center mb-2">
+                                                                <span className="font-medium text-lg">{engine}</span>
+                                                                <span className={`px-3 py-1 rounded-full text-sm ${
+                                                                    data.category === 'malicious'
+                                                                        ? 'bg-red-900 text-red-300'
+                                                                        : data.category === 'suspicious'
+                                                                        ? 'bg-yellow-900 text-yellow-300'
+                                                                        : 'bg-green-900 text-green-300'
+                                                                }`}>
+                                                                    {data.category}
+                                                                </span>
+                                                            </div>
+                                                            {data.result && (
+                                                                <p className="text-gray-300">
+                                                                    <span className="text-cyan-300">Result:</span> {data.result}
+                                                                </p>
+                                                            )}
+                                                            {data.method && (
+                                                                <p className="text-gray-300">
+                                                                    <span className="text-cyan-300">Method:</span> {data.method}
+                                                                </p>
+                                                            )}
+                                                            {data.engine_version && (
+                                                                <p className="text-gray-300">
+                                                                    <span className="text-cyan-300">Engine Version:</span> {data.engine_version}
+                                                                </p>
+                                                            )}
+                                                            {data.engine_update && (
+                                                                <p className="text-gray-300">
+                                                                    <span className="text-cyan-300">Last Update:</span> {data.engine_update}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Last Analysis */}
+                                        {result.details.lastAnalysisDate && (
+                                            <div className="bg-gray-800/50 p-4 rounded-lg">
+                                                <h3 className="text-lg font-semibold text-cyan-300 mb-2">Last Analysis</h3>
+                                                <p className="text-gray-300">
+                                                    {new Date(result.details.lastAnalysisDate).toLocaleString()}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Generate Report Button */}
+                                {scanData && (
+                                    <div className="mt-6 flex justify-center">
+                                        <button
+                                            onClick={handleGenerateReport}
+                                            disabled={generatingReport}
+                                            className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-semibold transition-colors flex items-center space-x-2 disabled:bg-gray-600 disabled:cursor-not-allowed"
+                                        >
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <span>{generatingReport ? 'Generating...' : 'Generate Report'}</span>
+                                        </button>
+                                    </div>
+                                )}
                             </motion.div>
                         )}
 

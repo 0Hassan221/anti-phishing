@@ -250,63 +250,81 @@ class VirusTotalService
 
     public function processResults(array $results, array $meta = [])
     {
-        if (!isset($results['data']) || !isset($results['data']['attributes'])) {
-            Log::error('Invalid result structure from VirusTotal', [
-                'results' => $results,
-                'meta' => $meta
-            ]);
-
-            return [
-                'stats' => [
-                    'harmless' => 0,
-                    'malicious' => 0,
-                    'suspicious' => 0,
-                    'undetected' => 0,
-                    'timeout' => 0,
-                    'error' => 1
-                ],
-                'status' => 'error',
-                'message' => 'Invalid response from VirusTotal API',
-                'scanned_at' => now()->toIso8601String(),
+        try {
+            $attributes = $results['data']['attributes'] ?? [];
+            $stats = $attributes['stats'] ?? [];
+            
+            // Calculate threat level
+            $totalEngines = array_sum($stats);
+            $maliciousCount = $stats['malicious'] ?? 0;
+            $suspiciousCount = $stats['suspicious'] ?? 0;
+            
+            $threatLevel = 'safe';
+            if ($maliciousCount > 0) {
+                $threatLevel = 'malicious';
+            } elseif ($suspiciousCount > 0) {
+                $threatLevel = 'suspicious';
+            }
+            
+            // Get detailed results from engines
+            $engineResults = [];
+            if (isset($attributes['results'])) {
+                foreach ($attributes['results'] as $engine => $result) {
+                    if ($result['category'] !== 'undetected') {
+                        $engineResults[$engine] = [
+                            'category' => $result['category'],
+                            'result' => $result['result'] ?? null,
+                            'method' => $result['method'] ?? null,
+                            'engine_version' => $result['engine_version'] ?? null,
+                            'engine_update' => $result['engine_update'] ?? null
+                        ];
+                    }
+                }
+            }
+            
+            // Get additional metadata
+            $lastAnalysisDate = $attributes['last_analysis_date'] ?? null;
+            $lastAnalysisStats = $attributes['last_analysis_stats'] ?? [];
+            $reputation = $attributes['reputation'] ?? 0;
+            $categories = $attributes['categories'] ?? [];
+            
+            // Format the response
+            $processedResults = [
                 'meta' => $meta,
-                'api_error' => true
+                'threat_level' => $threatLevel,
+                'is_malicious' => $threatLevel === 'malicious',
+                'is_suspicious' => $threatLevel === 'suspicious',
+                'stats' => [
+                    'total_engines' => $totalEngines,
+                    'malicious' => $maliciousCount,
+                    'suspicious' => $suspiciousCount,
+                    'harmless' => $stats['harmless'] ?? 0,
+                    'undetected' => $stats['undetected'] ?? 0,
+                    'timeout' => $stats['timeout'] ?? 0
+                ],
+                'engine_results' => $engineResults,
+                'reputation' => $reputation,
+                'categories' => $categories,
+                'last_analysis_date' => $lastAnalysisDate ? date('Y-m-d H:i:s', $lastAnalysisDate) : null,
+                'last_analysis_stats' => $lastAnalysisStats,
+                'scanned_at' => now()->toDateTimeString()
             ];
-        }
-
-        $stats = $results['data']['attributes']['stats'] ?? [];
-
-        Log::info('VirusTotal scan statistics', [
-            'stats' => $stats,
-            'file_name' => $meta['fileName'] ?? 'Unknown',
-            'file_hash' => $meta['fileHash'] ?? 'Unknown'
-        ]);
-
-        $stats = array_merge([
-            'harmless' => 0,
-            'malicious' => 0,
-            'suspicious' => 0,
-            'undetected' => 0,
-            'timeout' => 0
-        ], $stats);
-
-        $allZero = (array_sum(array_values($stats)) === 0);
-        if ($allZero) {
-            Log::warning('All scan statistics are zero', [
-                'file_name' => $meta['fileName'] ?? 'Unknown',
-                'file_hash' => $meta['fileHash'] ?? 'Unknown'
+            
+            // Add additional metadata if provided
+            if (!empty($meta)) {
+                $processedResults['meta'] = $meta;
+            }
+            
+            return $processedResults;
+            
+        } catch (\Exception $e) {
+            Log::error('Error processing VirusTotal results', [
+                'error' => $e->getMessage(),
+                'results' => $results
             ]);
-
-            $stats['warning'] = 1;
+            
+            throw $e;
         }
-
-        return [
-            'stats' => $stats,
-            'status' => $results['data']['attributes']['status'] ?? 'unknown',
-            'results' => $results['data']['attributes']['results'] ?? [],
-            'scanned_at' => now()->toIso8601String(),
-            'meta' => $meta,
-            'all_zero' => $allZero
-        ];
     }
 
     public function cacheResults(string $key, array $data)

@@ -83,3 +83,4 @@ Route::get('/simulation/results', function () {
 })->name('simulation.results');
 
 require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';
