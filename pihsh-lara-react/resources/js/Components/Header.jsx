@@ -3,34 +3,34 @@
 // function Header({ auth }) {
 //     return (
 //         <div id="header" className="mx-auto lg:w-[90%] py-8 bg-gradient-to-b  min-h-screen flex items-center">
-//             <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center px-6 md:px-12 gap-10">
+//             <div className="container grid items-center grid-cols-1 gap-10 px-6 mx-auto md:grid-cols-2 md:px-12">
 //                 {/* Image Section */}
-//                 <div className="flex justify-center md:justify-end order-first md:order-last">
+//                 <div className="flex justify-center order-first md:justify-end md:order-last">
 //                     <div className="relative">
 //                         <img
 //                             src="/assets/header1.webp"
 //                             alt="Security Header"
-//                             className="max-w-full h-auto rounded-2xl object-cover"
+//                             className="object-cover h-auto max-w-full rounded-2xl"
 //                         />
-//                         {/* <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-blue-600 rounded-full opacity-20 blur-xl"></div> */}
+//                         {/* <div className="absolute w-20 h-20 bg-blue-600 rounded-full -bottom-4 -right-4 opacity-20 blur-xl"></div> */}
 //                     </div>
 //                 </div>
 
 //                 {/* Text Section */}
-//                 <div className="header-info text-center md:text-left flex flex-col items-center md:items-start order-last md:order-first space-y-6">
-//                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+//                 <div className="flex flex-col items-center order-last space-y-6 text-center header-info md:text-left md:items-start md:order-first">
+//                     <h1 className="text-4xl font-extrabold leading-tight text-gray-900 sm:text-5xl md:text-6xl">
 //                         Stay <span className="text-blue-600">Safe</span>,<br />
 //                         Stay <span className="text-blue-600">Secure</span>
 //                     </h1>
-//                     <p className="text-lg text-gray-600 max-w-md">
+//                     <p className="max-w-md text-lg text-gray-600">
 //                         Protect yourself from phishing and cyber threats with our advanced security platform.
 //                     </p>
                     
 //                     {/* Buttons */}
-//                     <div className="flex flex-col sm:flex-row gap-4 w-full justify-center md:justify-start">
+//                     <div className="flex flex-col justify-center w-full gap-4 sm:flex-row md:justify-start">
 //                         <Link
 //                             href={route('login')}
-//                             className="inline-flex items-center justify-center gap-2 py-3 px-8 font-semibold text-white bg-blue-600 rounded-xl shadow-md hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 text-lg"
+//                             className="inline-flex items-center justify-center gap-2 px-8 py-3 text-lg font-semibold text-white transition-all duration-300 transform bg-blue-600 shadow-md rounded-xl hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 hover:scale-105"
 //                         >
 //                             <svg
 //                                 className="w-5 h-5"
@@ -48,7 +48,7 @@
 //                         </Link>
 //                         <Link
 //                             href={route('register')}
-//                             className="inline-flex items-center justify-center gap-2 py-3 px-8 font-semibold text-blue-600 bg-white border-2 border-blue-600 rounded-xl shadow-md hover:bg-blue-50 focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 text-lg"
+//                             className="inline-flex items-center justify-center gap-2 px-8 py-3 text-lg font-semibold text-blue-600 transition-all duration-300 transform bg-white border-2 border-blue-600 shadow-md rounded-xl hover:bg-blue-50 focus:ring-4 focus:ring-blue-300 hover:scale-105"
 //                         >
 //                             <svg
 //                                 className="w-5 h-5"
@@ -110,7 +110,7 @@ function Header({ auth }) {
     return (
         <motion.div
             id="header"
-            className="w-full py-16 md:py-24 bg-gradient-to-br from-gray-900 via-blue-900 to-cyan-800 min-h-screen flex items-center justify-center relative overflow-hidden"
+            className="relative flex items-center justify-center w-full min-h-screen py-16 overflow-hidden md:py-24 bg-gradient-to-br from-gray-900 via-blue-900 to-cyan-800"
             initial="hidden"
             animate="visible"
             variants={containerVariants}
@@ -118,12 +118,12 @@ function Header({ auth }) {
             {/* Background Overlay for Depth */}
             <div className="absolute inset-0 bg-[url('/assets/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
 
-            <div className="container mx-auto px-6 md:px-12 text-center relative z-10">
+            <div className="container relative z-10 px-6 mx-auto text-center md:px-12">
                 {/* Header Content */}
                 <motion.div className="space-y-10" variants={childVariants}>
                     {/* Subheading */}
                     <motion.p
-                        className="text-sm md:text-lg pt-10 uppercase tracking-widest text-cyan-400 font-medium"
+                        className="pt-10 text-sm font-medium tracking-widest uppercase md:text-lg text-cyan-400"
                         variants={childVariants}
                     >
                         Advanced Cybersecurity Solutions
@@ -131,7 +131,7 @@ function Header({ auth }) {
 
                     {/* Main Heading */}
                     <motion.h1
-                        className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-tight tracking-tight text-white"
+                        className="text-5xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl"
                         variants={childVariants}
                     >
                         Defend Your <span className="text-cyan-300">Digital Life</span><br />
@@ -140,7 +140,7 @@ function Header({ auth }) {
 
                     {/* Description */}
                     <motion.p
-                        className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed"
+                        className="max-w-3xl mx-auto text-lg font-light leading-relaxed text-gray-300 md:text-xl"
                         variants={childVariants}
                     >
                         Safeguard against phishing, malware, and cyber threats with our cutting-edge platform. Access expert-led training to stay ahead of attackers.
@@ -148,7 +148,7 @@ function Header({ auth }) {
 
                     {/* Buttons */}
                     <motion.div
-                        className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+                        className="flex flex-col items-center justify-center gap-6 sm:flex-row"
                         variants={childVariants}
                     >
                         <motion.div
@@ -158,10 +158,10 @@ function Header({ auth }) {
                         >
                             <Link
                                 href={route('login')}
-                                className="group inline-flex items-center justify-center gap-3 py-4 px-12 text-lg font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full hover:from-cyan-600 hover:to-blue-700 transition-colors duration-300 w-full sm:w-auto"
+                                className="inline-flex items-center justify-center w-full gap-3 px-12 py-4 text-lg font-semibold text-white transition-colors duration-300 rounded-full group bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 sm:w-auto"
                             >
                                 <svg
-                                    className="w-6 h-6 shrink-0 group-hover:rotate-12 transition-transform duration-300"
+                                    className="w-6 h-6 transition-transform duration-300 shrink-0 group-hover:rotate-12"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -184,10 +184,10 @@ function Header({ auth }) {
                         >
                             <Link
                                 href={route('register')}
-                                className="group inline-flex items-center justify-center gap-3 py-4 px-12 text-lg font-semibold text-cyan-300 bg-transparent border-2 border-cyan-300 rounded-full hover:bg-cyan-300/20 transition-colors duration-300 w-full sm:w-auto"
+                                className="inline-flex items-center justify-center w-full gap-3 px-12 py-4 text-lg font-semibold transition-colors duration-300 bg-transparent border-2 rounded-full group text-cyan-300 border-cyan-300 hover:bg-cyan-300/20 sm:w-auto"
                             >
                                 <svg
-                                    className="w-6 h-6 shrink-0 group-hover:scale-110 transition-transform duration-300"
+                                    className="w-6 h-6 transition-transform duration-300 shrink-0 group-hover:scale-110"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -207,7 +207,7 @@ function Header({ auth }) {
 
                     {/* Additional Text for Training */}
                     <motion.p
-                        className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto italic"
+                        className="max-w-2xl mx-auto text-base italic text-gray-400 md:text-lg"
                         variants={childVariants}
                     >
                         "Master cybersecurity with our expert-led training programs—available to all users."
@@ -215,7 +215,7 @@ function Header({ auth }) {
 
                     {/* Trust Indicators */}
                     <motion.div
-                        className="mt-8 flex flex-col sm:flex-row justify-center gap-6 text-gray-400 text-sm md:text-base"
+                        className="flex flex-col justify-center gap-6 mt-8 text-sm text-gray-400 sm:flex-row md:text-base"
                         variants={childVariants}
                     >
                         <span className="flex items-center gap-2">
@@ -235,7 +235,7 @@ function Header({ auth }) {
             </div>
 
             {/* Bottom Gradient Fade */}
-            <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-gray-900 to-transparent pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-full h-32 pointer-events-none bg-gradient-to-t from-gray-900 to-transparent" />
         </motion.div>
     );
 }

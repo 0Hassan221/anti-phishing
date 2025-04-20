@@ -58,23 +58,23 @@ function Services() {
 
     return (
         <section id="services" className="relative py-20 bg-gradient-to-b from-blue-50 to-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                     viewport={{ once: true, amount: 0.5 }}
-                    className="text-center mb-16"
+                    className="mb-16 text-center"
                 >
-                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                        <span className="bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                    <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
+                        <span className="text-transparent bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text">
                             Our Cybersecurity Solutions
                         </span>
                     </h2>
-                    <div className="w-20 h-1 bg-blue-500 rounded-full mx-auto"></div>
+                    <div className="w-20 h-1 mx-auto bg-blue-500 rounded-full"></div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {servicesData.map((service, index) => (
                         <motion.div
                             key={service.id}
@@ -83,14 +83,14 @@ function Services() {
                             viewport={{ once: true, amount: 0.5 }}
                             variants={cardVariants}
                             custom={index}
-                            className="group relative"
+                            className="relative group"
                         >
-                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-all duration-300"></div>
+                            <div className="absolute transition-all duration-300 opacity-0 -inset-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-2xl blur group-hover:opacity-30"></div>
                             
-                            <div className="relative h-full bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-                                <div className="overflow-hidden relative">
+                            <div className="relative h-full overflow-hidden transition-all duration-300 bg-white shadow-xl rounded-2xl hover:shadow-2xl">
+                                <div className="relative overflow-hidden">
                                     <img
-                                        className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"
+                                        className="object-cover w-full h-64 transition-transform duration-500 transform group-hover:scale-110"
                                         src={service.image}
                                         alt={service.title}
                                     />
@@ -98,15 +98,15 @@ function Services() {
                                 </div>
                                 
                                 <div className="p-6">
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                                    <h3 className="mb-3 text-2xl font-bold text-gray-900 transition-colors group-hover:text-blue-600">
                                         {service.title}
                                     </h3>
-                                    <p className="text-gray-600 mb-4 leading-relaxed">
+                                    <p className="mb-4 leading-relaxed text-gray-600">
                                         {service.description}
                                     </p>
                                     <Link
                                         to={service.link}
-                                        className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition-colors"
+                                        className="inline-flex items-center gap-2 font-semibold text-blue-600 transition-colors hover:text-blue-800"
                                     >
                                         <span>Explore Service</span>
                                         <svg

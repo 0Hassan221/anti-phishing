@@ -109,17 +109,17 @@ const Navbar = ({ bgColor }) => {
             animate="animate"
             variants={navVariants}
         >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16 items-center">
+            <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
                     {/* Logo Section */}
                     <motion.div
-                        className="flex-shrink-0 flex items-center space-x-2 group"
+                        className="flex items-center flex-shrink-0 space-x-2 group"
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.3 }}
                     >
                         <div className="relative">
                             <motion.div
-                                className="absolute -inset-2 bg-cyan-400/30 rounded-full blur-lg"
+                                className="absolute rounded-full -inset-2 bg-cyan-400/30 blur-lg"
                                 animate={{ scale: [1, 1.1, 1] }}
                                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                             />
@@ -142,20 +142,20 @@ const Navbar = ({ bgColor }) => {
                         <a
                             href="/"
                             onClick={(e) => handleSmoothScroll(e, 'home')}
-                            className="text-xl font-bold text-white hover:text-cyan-300 transition-colors duration-300"
+                            className="text-xl font-bold text-white transition-colors duration-300 hover:text-cyan-300"
                         >
                             Anti<span className="font-extrabold">Phishing</span>
                         </a>
                     </motion.div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex space-x-8 items-center">
+                    <div className="items-center hidden space-x-8 md:flex">
                         {navLinks.map((item, index) => (
                             <motion.div key={index} whileHover="hover" variants={linkVariants}>
                                 <a
                                     href={item === "Home" ? "/" : `/#${item.toLowerCase()}`}
                                     onClick={(e) => handleSmoothScroll(e, item === "Home" ? "home" : item.toLowerCase())}
-                                    className="text-blue-100 hover:text-cyan-300 transition-colors duration-300 relative group cursor-pointer"
+                                    className="relative text-blue-100 transition-colors duration-300 cursor-pointer hover:text-cyan-300 group"
                                 >
                                     {item}
                                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-300 group-hover:w-full transition-all duration-300 ease-out" />
@@ -166,12 +166,12 @@ const Navbar = ({ bgColor }) => {
 
                     {/* Desktop User Menu */}
                     <div
-                        className="hidden md:flex items-center relative"
+                        className="relative items-center hidden md:flex"
                         onMouseEnter={() => setUserMenuOpen(true)}
                         onMouseLeave={() => setUserMenuOpen(false)}
                     >
                         <motion.button
-                            className="relative w-10 h-10 rounded-full border-2 border-cyan-400/50 hover:border-cyan-300 transition-all duration-300"
+                            className="relative w-10 h-10 transition-all duration-300 border-2 rounded-full border-cyan-400/50 hover:border-cyan-300"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >
@@ -197,7 +197,7 @@ const Navbar = ({ bgColor }) => {
                         </motion.button>
 
                         <motion.div
-                            className="absolute right-0 top-12 w-48 bg-gray-900/95 rounded-lg shadow-xl overflow-hidden border border-cyan-400/20 backdrop-blur-md"
+                            className="absolute right-0 w-48 overflow-hidden border rounded-lg shadow-xl top-12 bg-gray-900/95 border-cyan-400/20 backdrop-blur-md"
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{
                                 opacity: userMenuOpen ? 1 : 0,
@@ -217,7 +217,7 @@ const Navbar = ({ bgColor }) => {
                                         </UserMenuItem>
                                         <button
                                             onClick={handleLogout}
-                                            className="w-full text-left flex items-center px-4 py-2 text-blue-100 hover:bg-cyan-400/20 hover:text-cyan-300 rounded-lg transition-colors"
+                                            className="flex items-center w-full px-4 py-2 text-left text-blue-100 transition-colors rounded-lg hover:bg-cyan-400/20 hover:text-cyan-300"
                                         >
                                             <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -243,7 +243,7 @@ const Navbar = ({ bgColor }) => {
                     <div className="md:hidden">
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-blue-100 hover:text-cyan-300 hover:bg-cyan-800/20 focus:outline-none"
+                            className="inline-flex items-center justify-center p-2 text-blue-100 rounded-md hover:text-cyan-300 hover:bg-cyan-800/20 focus:outline-none"
                         >
                             <svg
                                 className="w-6 h-6"
@@ -276,7 +276,7 @@ const Navbar = ({ bgColor }) => {
                             key={index}
                             href={item === "Home" ? "/" : `/#${item.toLowerCase()}`}
                             onClick={(e) => handleSmoothScroll(e, item === "Home" ? "home" : item.toLowerCase())}
-                            className="block px-4 py-2 text-blue-100 hover:bg-cyan-400/20 hover:text-cyan-300 rounded-lg transition-colors cursor-pointer"
+                            className="block px-4 py-2 text-blue-100 transition-colors rounded-lg cursor-pointer hover:bg-cyan-400/20 hover:text-cyan-300"
                         >
                             {item}
                         </a>
@@ -285,9 +285,9 @@ const Navbar = ({ bgColor }) => {
                     <div className="pt-4 border-t border-blue-700">
                         <button
                             onClick={() => setUserMenuOpen(!userMenuOpen)}
-                            className="w-full text-left flex items-center space-x-3 p-3 hover:bg-cyan-400/20 rounded-lg transition-colors"
+                            className="flex items-center w-full p-3 space-x-3 text-left transition-colors rounded-lg hover:bg-cyan-400/20"
                         >
-                            <div className="relative w-8 h-8 rounded-full border-2 border-cyan-400/50">
+                            <div className="relative w-8 h-8 border-2 rounded-full border-cyan-400/50">
                                 <svg
                                     className="w-full h-full p-1 text-blue-100"
                                     fill="none"
@@ -317,7 +317,7 @@ const Navbar = ({ bgColor }) => {
                         </button>
 
                         <motion.div
-                            className="space-y-2 pl-4 ml-2 overflow-hidden"
+                            className="pl-4 ml-2 space-y-2 overflow-hidden"
                             variants={menuVariants}
                             animate={userMenuOpen ? "open" : "closed"}
                         >
@@ -331,7 +331,7 @@ const Navbar = ({ bgColor }) => {
                                     </UserMenuItem>
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full text-left flex items-center px-4 py-2 text-blue-100 hover:bg-cyan-400/20 hover:text-cyan-300 rounded-lg transition-colors"
+                                        className="flex items-center w-full px-4 py-2 text-left text-blue-100 transition-colors rounded-lg hover:bg-cyan-400/20 hover:text-cyan-300"
                                     >
                                         <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -360,7 +360,7 @@ const Navbar = ({ bgColor }) => {
 const UserMenuItem = ({ href, icon, children }) => (
     <Link
         href={href}
-        className="flex items-center px-4 py-2 text-blue-100 hover:bg-cyan-400/20 hover:text-cyan-300 rounded-lg transition-colors"
+        className="flex items-center px-4 py-2 text-blue-100 transition-colors rounded-lg hover:bg-cyan-400/20 hover:text-cyan-300"
     >
         <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />

@@ -30,16 +30,16 @@ export default function Register() {
     return (
         <>
             <Head title="Register" />
-            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col pt-10">
+            <div className="flex flex-col min-h-screen pt-10 bg-gradient-to-b from-gray-50 to-gray-100">
                 <Navbar />
-                <div className="flex-grow flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
-                    <div className="w-full max-w-md bg-white shadow-2xl rounded-xl p-8 transform transition-all duration-300 hover:shadow-3xl">
+                <div className="flex items-center justify-center flex-grow px-4 py-16 sm:px-6 lg:px-8">
+                    <div className="w-full max-w-md p-8 transition-all duration-300 transform bg-white shadow-2xl rounded-xl hover:shadow-3xl">
                         {/* Logo Section */}
                         <div className="flex justify-center mb-8">
                             <div className="relative flex items-center space-x-2 group">
                                 <div className="relative">
                                     <div className="absolute -inset-2 bg-cyan-400/20 rounded-full blur-lg animate-[pulse_3s_infinite]" />
-                                    <div className="relative bg-cyan-500 p-2 rounded-full transition-transform duration-500 group-hover:scale-110">
+                                    <div className="relative p-2 transition-transform duration-500 rounded-full bg-cyan-500 group-hover:scale-110">
                                         <svg
                                             className="w-8 h-8 text-white animate-[bounce_2s_infinite]"
                                             fill="none"
@@ -68,19 +68,19 @@ export default function Register() {
                                 <InputLabel
                                     htmlFor="name"
                                     value="Name"
-                                    className="text-gray-800 font-medium"
+                                    className="font-medium text-gray-800"
                                 />
                                 <TextInput
                                     id="name"
                                     name="name"
                                     value={data.name}
-                                    className="mt-2 block w-full rounded-lg border-gray-200 bg-gray-50 text-gray-900 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 transition-all duration-300 shadow-sm"
+                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
                                     autoComplete="name"
                                     isFocused={true}
                                     onChange={(e) => setData('name', e.target.value)}
                                     required
                                 />
-                                <InputError message={errors.name} className="mt-2 text-red-600 text-xs" />
+                                <InputError message={errors.name} className="mt-2 text-xs text-red-600" />
                             </div>
 
                             {/* Email Field */}
@@ -88,19 +88,19 @@ export default function Register() {
                                 <InputLabel
                                     htmlFor="email"
                                     value="Email"
-                                    className="text-gray-800 font-medium"
+                                    className="font-medium text-gray-800"
                                 />
                                 <TextInput
                                     id="email"
                                     type="email"
                                     name="email"
                                     value={data.email}
-                                    className="mt-2 block w-full rounded-lg border-gray-200 bg-gray-50 text-gray-900 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 transition-all duration-300 shadow-sm"
+                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
                                     autoComplete="username"
                                     onChange={(e) => setData('email', e.target.value)}
                                     required
                                 />
-                                <InputError message={errors.email} className="mt-2 text-red-600 text-xs" />
+                                <InputError message={errors.email} className="mt-2 text-xs text-red-600" />
                             </div>
 
                             {/* Password Field */}
@@ -108,19 +108,19 @@ export default function Register() {
                                 <InputLabel
                                     htmlFor="password"
                                     value="Password"
-                                    className="text-gray-800 font-medium"
+                                    className="font-medium text-gray-800"
                                 />
                                 <TextInput
                                     id="password"
                                     type="password"
                                     name="password"
                                     value={data.password}
-                                    className="mt-2 block w-full rounded-lg border-gray-200 bg-gray-50 text-gray-900 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 transition-all duration-300 shadow-sm"
+                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
                                     autoComplete="new-password"
                                     onChange={(e) => setData('password', e.target.value)}
                                     required
                                 />
-                                <InputError message={errors.password} className="mt-2 text-red-600 text-xs" />
+                                <InputError message={errors.password} className="mt-2 text-xs text-red-600" />
                             </div>
 
                             {/* Confirm Password Field */}
@@ -128,19 +128,19 @@ export default function Register() {
                                 <InputLabel
                                     htmlFor="password_confirmation"
                                     value="Confirm Password"
-                                    className="text-gray-800 font-medium"
+                                    className="font-medium text-gray-800"
                                 />
                                 <TextInput
                                     id="password_confirmation"
                                     type="password"
                                     name="password_confirmation"
                                     value={data.password_confirmation}
-                                    className="mt-2 block w-full rounded-lg border-gray-200 bg-gray-50 text-gray-900 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 transition-all duration-300 shadow-sm"
+                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
                                     autoComplete="new-password"
                                     onChange={(e) => setData('password_confirmation', e.target.value)}
                                     required
                                 />
-                                <InputError message={errors.password_confirmation} className="mt-2 text-red-600 text-xs" />
+                                <InputError message={errors.password_confirmation} className="mt-2 text-xs text-red-600" />
                             </div>
 
                             {/* Terms of Use Checkbox */}
@@ -150,13 +150,13 @@ export default function Register() {
                                     id="terms"
                                     checked={agreedToTerms}
                                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                    className="mt-1 h-5 w-5 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500 transition-all duration-200"
+                                    className="w-5 h-5 mt-1 transition-all duration-200 border-gray-300 rounded text-cyan-600 focus:ring-cyan-500"
                                 />
                                 <label htmlFor="terms" className="text-sm text-gray-700">
                                     I agree to the{" "}
                                     <Link
                                         href="/terms-of-use"
-                                        className="text-cyan-600 hover:text-cyan-800 underline font-medium transition-colors duration-200"
+                                        className="font-medium underline transition-colors duration-200 text-cyan-600 hover:text-cyan-800"
                                     >
                                         Terms of Use
                                     </Link>
@@ -168,7 +168,7 @@ export default function Register() {
                             <div className="flex items-center justify-between">
                                 <Link
                                     href={route('login')}
-                                    className="text-sm text-cyan-600 hover:text-cyan-800 underline transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 rounded-md"
+                                    className="text-sm underline transition-colors duration-200 rounded-md text-cyan-600 hover:text-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2"
                                 >
                                     Already registered?
                                 </Link>
