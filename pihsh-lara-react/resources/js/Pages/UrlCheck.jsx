@@ -427,9 +427,6 @@ export default function UrlCheck() {
                                                 }
                                             }}
                                         />
-                                        <div className="absolute text-xs transform -translate-y-1/2 right-3 top-1/2 text-cyan-400/70">
-                                            Ctrl+Enter to scan
-                                        </div>
                                     </div>
                                 </div>
 

@@ -110,7 +110,7 @@ function Header({ auth }) {
     return (
         <motion.div
             id="header"
-            className="relative flex items-center justify-center w-full min-h-screen py-16 overflow-hidden md:py-24 bg-gradient-to-br from-gray-900 via-blue-900 to-cyan-800"
+            className="relative flex items-center justify-center w-full min-h-screen py-16 overflow-hidden md:py-24 bg-gradient-to-br from-gray-900 via-blue-900 to-blue-950"
             initial="hidden"
             animate="visible"
             variants={containerVariants}

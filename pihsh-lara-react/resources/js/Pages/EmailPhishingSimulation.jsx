@@ -46,50 +46,42 @@ export default function EmailPhishingSimulation() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white">
+        <div className="min-h-screen text-white bg-gray-900">
             <Head title="Email Phishing Simulation - AntiPhishing" />
 
             {/* Navbar */}
             <Navbar />
 
             {/* Main Content */}
-            <div className="pt-20 pb-16 min-h-screen bg-gradient-to-br from-gray-900 via-cyan-950 to-blue-900 flex items-center justify-center relative overflow-hidden">
+            <div className="relative flex items-center justify-center min-h-screen pt-20 pb-16 overflow-hidden bg-gradient-to-br from-gray-900 via-cyan-950 to-blue-900">
                 {/* Background Effects */}
                 <div className="absolute inset-0 pointer-events-none">
-                    <div className="w-96 h-96 bg-cyan-500/10 rounded-full absolute top-0 left-0 blur-3xl animate-pulse"></div>
-                    <div className="w-80 h-80 bg-blue-500/10 rounded-full absolute bottom-0 right-0 blur-3xl animate-pulse delay-1000"></div>
+                    <div className="absolute top-0 left-0 rounded-full w-96 h-96 bg-cyan-500/10 blur-3xl animate-pulse"></div>
+                    <div className="absolute bottom-0 right-0 delay-1000 rounded-full w-80 h-80 bg-blue-500/10 blur-3xl animate-pulse"></div>
                 </div>
 
                 <motion.div
-                    className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10"
+                    className="relative z-10 max-w-5xl px-4 mx-auto sm:px-6 lg:px-8"
                     initial="hidden"
                     animate="visible"
                     variants={containerVariants}
                 >
-                    <div className="bg-gray-800/90 backdrop-blur-md shadow-2xl rounded-2xl border border-cyan-500/30 p-8">
+                    <div className="p-8 border shadow-2xl bg-gray-800/90 backdrop-blur-md rounded-2xl border-cyan-500/30">
                         {/* Top Accent Bar */}
                         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-600 to-blue-900" />
 
                         {/* Header */}
-                        <div className="flex items-center space-x-6 mb-8">
-                            <svg
-                                className="w-14 h-14 text-cyan-400"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                                />
-                            </svg>
+                        <div className="flex items-center mb-8 space-x-6">
+                            <img
+                                src="/assets/Eye.png"
+                                alt="Eye Icon"
+                                className="object-contain w-20 h-20 mt-2"
+                            />
                             <div>
-                                <h1 className="text-4xl font-extrabold text-white tracking-tight">
+                                <h1 className="text-4xl font-extrabold tracking-tight text-white">
                                     Email Phishing Simulation
                                 </h1>
-                                <p className="mt-2 text-lg text-cyan-200 font-mono">
+                                <p className="mt-2 font-mono text-lg text-cyan-200">
                                     Step {step} of {totalSteps} | Score: {score}
                                 </p>
                             </div>
@@ -101,26 +93,26 @@ export default function EmailPhishingSimulation() {
                         </p>
 
                         {/* Email Simulation */}
-                        <div className="p-6 bg-gray-700/50 rounded-xl border border-cyan-500/20 mb-8">
+                        <div className="p-6 mb-8 border bg-gray-700/50 rounded-xl border-cyan-500/20">
                             <div className="text-left">
-                                <p className="text-sm text-cyan-400 font-mono">From: {simulation.sender}</p>
-                                <p className="text-sm text-cyan-400 font-mono mt-2">Subject: {simulation.subject}</p>
+                                <p className="font-mono text-sm text-cyan-400">From: {simulation.sender}</p>
+                                <p className="mt-2 font-mono text-sm text-cyan-400">Subject: {simulation.subject}</p>
                                 <p className="mt-4 text-gray-200 whitespace-pre-line">{simulation.body}</p>
                             </div>
                         </div>
 
                         {/* Choices */}
                         {!result && (
-                            <div className="flex justify-center space-x-6 mb-8">
+                            <div className="flex justify-center mb-8 space-x-6">
                                 <button
                                     onClick={() => handleChoice('safe')}
-                                    className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white font-semibold rounded-xl shadow-md hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-300"
+                                    className="px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                                 >
                                     Safe
                                 </button>
                                 <button
                                     onClick={() => handleChoice('phishing')}
-                                    className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold rounded-xl shadow-md hover:from-red-700 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300"
+                                    className="px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gradient-to-r from-red-600 to-red-500 rounded-xl hover:from-red-700 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                 >
                                     Phishing
                                 </button>
@@ -165,18 +157,18 @@ export default function EmailPhishingSimulation() {
 
                         {/* Navigation */}
                         {result && (
-                            <div className="mt-8 flex justify-center space-x-4">
+                            <div className="flex justify-center mt-8 space-x-4">
                                 {step < totalSteps ? (
                                     <button
                                         onClick={nextStep}
-                                        className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-semibold rounded-xl shadow-md hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 transition-all duration-300"
+                                        className="px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
                                     >
                                         Next Simulation
                                     </button>
                                 ) : (
                                     <Link
                                         href="/simulation/results"
-                                        className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-semibold rounded-xl shadow-md hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 transition-all duration-300"
+                                        className="px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
                                     >
                                         View Results
                                     </Link>
