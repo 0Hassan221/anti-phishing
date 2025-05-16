@@ -20,50 +20,42 @@ export default function Simulation() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white">
+        <div className="min-h-screen text-white bg-gray-900">
             <Head title="Simulation Labs - AntiPhishing" />
 
             {/* Navbar */}
             <Navbar />
 
             {/* Main Content */}
-            <div className="pt-24 pb-16 min-h-screen bg-gradient-to-br from-gray-900 via-cyan-950 to-blue-900 flex items-center justify-center relative overflow-hidden">
+            <div className="relative flex items-center justify-center min-h-screen pt-24 pb-16 overflow-hidden bg-gradient-to-br from-gray-900 via-cyan-950 to-blue-900">
                 {/* Background Effects */}
                 <div className="absolute inset-0 pointer-events-none">
-                    <div className="w-96 h-96 bg-cyan-500/10 rounded-full absolute top-0 left-0 blur-3xl animate-pulse"></div>
-                    <div className="w-80 h-80 bg-blue-500/10 rounded-full absolute bottom-0 right-0 blur-3xl animate-pulse delay-1000"></div>
+                    <div className="absolute top-0 left-0 rounded-full w-96 h-96 bg-cyan-500/10 blur-3xl animate-pulse"></div>
+                    <div className="absolute bottom-0 right-0 delay-1000 rounded-full w-80 h-80 bg-blue-500/10 blur-3xl animate-pulse"></div>
                 </div>
 
                 <motion.div
-                    className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative z-10"
+                    className="relative z-10 max-w-6xl px-4 mx-auto sm:px-6 lg:px-8"
                     initial="hidden"
                     animate="visible"
                     variants={containerVariants}
                 >
-                    <div className="bg-gray-800/90 backdrop-blur-md shadow-2xl rounded-2xl border border-cyan-500/30 p-8">
+                    <div className="p-8 border shadow-2xl bg-gray-800/90 backdrop-blur-md rounded-2xl border-cyan-500/30">
                         {/* Top Accent Bar */}
                         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-600 to-blue-900" />
 
                         {/* Header */}
-                        <div className="flex items-center space-x-6 mb-8">
-                            <svg
-                                className="w-14 h-14 text-cyan-400"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                                />
-                            </svg>
+                        <div className="flex items-center mb-8 space-x-6">
+                            <img
+                                src="/assets/Eye.png"
+                                alt="Eye Icon"
+                                className="object-contain w-20 h-20 mt-2"
+                            />
                             <div>
-                                <h1 className="text-4xl font-extrabold text-white tracking-tight">
+                                <h1 className="text-4xl font-extrabold tracking-tight text-white">
                                     Phishing Simulation Labs
                                 </h1>
-                                <p className="mt-2 text-lg text-cyan-200 font-mono">
+                                <p className="mt-2 font-mono text-lg text-cyan-200">
                                     Test your skills. Defend the digital frontier.
                                 </p>
                             </div>
@@ -71,16 +63,16 @@ export default function Simulation() {
 
                         {/* Introduction */}
                         <div className="mb-10">
-                            <p className="text-lg text-gray-300 leading-relaxed max-w-prose">
+                            <p className="text-lg leading-relaxed text-gray-300 max-w-prose">
                                 Hone your phishing detection skills with interactive simulations. Identify threats, earn scores, and become a cybersecurity expert.
                             </p>
                         </div>
 
                         {/* Simulation Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                        <div className="grid grid-cols-1 gap-6 mb-10 md:grid-cols-2">
                             <Link href="/simulation/email" onClick={handleClick}>
                                 <motion.div
-                                    className="p-6 bg-gray-700/50 rounded-xl border border-cyan-500/20 shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 cursor-pointer"
+                                    className="p-6 transition-all duration-300 border shadow-lg cursor-pointer bg-gray-700/50 rounded-xl border-cyan-500/20 hover:shadow-cyan-500/30"
                                     variants={cardVariants}
                                     whileHover="hover"
                                 >
@@ -90,7 +82,7 @@ export default function Simulation() {
                                 </motion.div>
                             </Link>
                             <motion.div
-                                className="p-6 bg-gray-700/50 rounded-xl border border-cyan-500/20 shadow-lg hover:shadow-cyan-500/30 transition-all duration-300"
+                                className="p-6 transition-all duration-300 border shadow-lg bg-gray-700/50 rounded-xl border-cyan-500/20 hover:shadow-cyan-500/30"
                                 variants={cardVariants}
                                 whileHover="hover"
                             >
@@ -102,10 +94,10 @@ export default function Simulation() {
 
                         {/* Score Dashboard */}
                         <div className="mb-10">
-                            <h2 className="text-2xl font-bold text-white mb-4">Your Scores</h2>
-                            <div className="p-6 bg-gray-700/50 rounded-xl border border-cyan-500/20">
-                                <p className="text-gray-400 text-center">No simulations completed yet.</p>
-                                <p className="mt-2 text-cyan-300 text-center font-mono">
+                            <h2 className="mb-4 text-2xl font-bold text-white">Your Scores</h2>
+                            <div className="p-6 border bg-gray-700/50 rounded-xl border-cyan-500/20">
+                                <p className="text-center text-gray-400">No simulations completed yet.</p>
+                                <p className="mt-2 font-mono text-center text-cyan-300">
                                     Start a lab to see your scores!
                                 </p>
                             </div>
@@ -116,7 +108,7 @@ export default function Simulation() {
                             <Link
                                 href="/simulation/email"
                                 onClick={handleClick}
-                                className="px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-lg font-semibold rounded-xl shadow-lg hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 transition-all duration-300 inline-block"
+                                className="inline-block px-8 py-4 text-lg font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
                             >
                                 Start Simulation
                             </Link>

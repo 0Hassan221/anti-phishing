@@ -5,6 +5,7 @@ import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import { useState } from 'react';
+import Logo from '@/Components/Logo';
 
 export default function Register() {
     const [agreedToTerms, setAgreedToTerms] = useState(false); // State لتتبع موافقة المستخدم
@@ -36,29 +37,7 @@ export default function Register() {
                     <div className="w-full max-w-md p-8 transition-all duration-300 transform bg-white shadow-2xl rounded-xl hover:shadow-3xl">
                         {/* Logo Section */}
                         <div className="flex justify-center mb-8">
-                            <div className="relative flex items-center space-x-2 group">
-                                <div className="relative">
-                                    <div className="absolute -inset-2 bg-cyan-400/20 rounded-full blur-lg animate-[pulse_3s_infinite]" />
-                                    <div className="relative p-2 transition-transform duration-500 rounded-full bg-cyan-500 group-hover:scale-110">
-                                        <svg
-                                            className="w-8 h-8 text-white animate-[bounce_2s_infinite]"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                                            />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-900">
-                                    Anti<span className="font-extrabold">Phishing</span>
-                                </h1>
-                            </div>
+                            <Logo color='dark'/>
                         </div>
 
                         {/* Form */}

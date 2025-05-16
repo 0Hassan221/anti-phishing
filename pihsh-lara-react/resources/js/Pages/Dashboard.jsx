@@ -116,23 +116,15 @@ export default function Profile() {
                             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEwxMDAsMTAwIEwyMDAsMCBaIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-10"></div>
                             <div className="flex items-center space-x-6">
                                 <div className="relative">
-                                    <svg 
-                                        className="w-14 h-14 text-cyan-300" 
-                                        fill="none" 
-                                        stroke="currentColor" 
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path 
-                                            strokeLinecap="round" 
-                                            strokeLinejoin="round" 
-                                            strokeWidth={2} 
-                                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" 
-                                        />
-                                    </svg>
+                                    <img 
+                                        src="/assets/darkEye.png" 
+                                        alt="Eye Logo" 
+                                        className="object-contain w-14 h-14"
+                                    />
                                 </div>
                                 <div>
                                     <h3 className="text-3xl font-extrabold tracking-tight text-white">
-                                        Anti-Phishing Command Center
+                                        Secura Command Center
                                     </h3>
                                     <p className="mt-2 font-mono text-sm text-cyan-200">
                                         Agent {user.name}, your secure profile is active.
@@ -153,19 +145,11 @@ export default function Profile() {
                                     title="Upload your agent avatar"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 to-transparent"></div>
-                                    <svg 
-                                        className="z-10 transition-colors duration-300 w-14 h-14 text-cyan-300 hover:text-cyan-100" 
-                                        fill="none" 
-                                        stroke="currentColor" 
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path 
-                                            strokeLinecap="round" 
-                                            strokeLinejoin="round" 
-                                            strokeWidth={2} 
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
-                                        />
-                                    </svg>
+                                    <img 
+                                        src="/assets/Eye.png" 
+                                        alt="Eye Logo" 
+                                        className="z-10 object-contain transition-transform duration-300 w-14 h-14" 
+                                    />
                                 </div>
                             </div>
 
