@@ -64,6 +64,15 @@ Route::get('/training', function () {
 
 Route::get('/terms-of-use', function () {
     return Inertia::render('TermsOfUse');
+})->name('terms.use');
+
+// Privacy Policy and Terms of Service routes
+Route::get('/privacy', function () {
+    return Inertia::render('PrivacyPolicy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return Inertia::render('TermsOfService');
 })->name('terms');
 
 // Simulation Routes
