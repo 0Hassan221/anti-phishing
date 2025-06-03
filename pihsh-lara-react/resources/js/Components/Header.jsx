@@ -82,6 +82,11 @@ import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
 function Header({ auth }) {
+    const userName = auth?.user?.name || "Guest"; // Fallback to "Guest" if not logged in
+    const isLoggedIn = auth?.user !== null; // Check if user is logged in
+
+    console.log(auth.user?.name)
+
     // Animation Variants
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -107,6 +112,19 @@ function Header({ auth }) {
         },
     };
 
+    const welcomeVariants = {
+        hidden: { opacity: 0, y: -20 },
+        visible: { 
+            opacity: 1, 
+            y: 0, 
+            transition: { 
+                duration: 1, 
+                ease: "easeOut",
+                delay: 0.2
+            } 
+        },
+    };
+
     return (
         <motion.div
             id="header"
@@ -118,9 +136,28 @@ function Header({ auth }) {
             {/* Background Overlay for Depth */}
             <div className="absolute inset-0 bg-[url('/assets/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
 
+            {/* Welcome Message for Logged In Users */}
+            {isLoggedIn && (
+  <motion.div
+    className="absolute z-20 -translate-x-1/2 top-24" // زوّد top بدل mb-20
+    variants={welcomeVariants}
+    initial="hidden"
+    animate="visible"
+  >
+    <div className="flex items-center gap-3 px-6 py-3 border rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-600/20 backdrop-blur-sm border-cyan-400/30">
+      <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+      <span className="text-sm font-medium tracking-wide text-cyan-300 md:text-base">
+        Welcome back, <span className="font-semibold text-white">{userName}</span>
+      </span>
+    </div>
+  </motion.div>
+)}
+
+
             <div className="container relative z-10 px-6 mx-auto text-center md:px-12">
+
                 {/* Header Content */}
-                <motion.div className="space-y-10" variants={childVariants}>
+                <motion.div className="space-y-10 " variants={childVariants}>
                     {/* Subheading */}
                     <motion.p
                         className="pt-10 text-sm font-medium tracking-widest uppercase md:text-lg text-cyan-400"
@@ -135,7 +172,7 @@ function Header({ auth }) {
                         variants={childVariants}
                     >
                         Defend Your <span className="text-cyan-300">Digital Life</span><br />
-                        With <span className="text-cyan-300">Confidence</span>
+                        With <span className="text-cyan-300">Secura</span>
                     </motion.h1>
 
                     {/* Description */}
@@ -146,64 +183,66 @@ function Header({ auth }) {
                         Safeguard against phishing, malware, and cyber threats with our cutting-edge platform. Access expert-led training to stay ahead of attackers.
                     </motion.p>
 
-                    {/* Buttons */}
-                    <motion.div
-                        className="flex flex-col items-center justify-center gap-6 sm:flex-row"
-                        variants={childVariants}
-                    >
+                    {/* Buttons - Only show when user is NOT logged in */}
+                    {!isLoggedIn && (
                         <motion.div
-                            variants={buttonVariants}
-                            whileTap="tap"
-                            className="w-full sm:w-auto"
+                            className="flex flex-col items-center justify-center gap-6 sm:flex-row"
+                            variants={childVariants}
                         >
-                            <Link
-                                href={route('login')}
-                                className="inline-flex items-center justify-center w-full gap-3 px-12 py-4 text-lg font-semibold text-white transition-colors duration-300 rounded-full group bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 sm:w-auto"
+                            <motion.div
+                                variants={buttonVariants}
+                                whileTap="tap"
+                                className="w-full sm:w-auto"
                             >
-                                <svg
-                                    className="w-6 h-6 transition-transform duration-300 shrink-0 group-hover:rotate-12"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
+                                <Link
+                                    href={route('login')}
+                                    className="inline-flex items-center justify-center w-full gap-3 px-12 py-4 text-lg font-semibold text-white transition-colors duration-300 rounded-full group bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 sm:w-auto"
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"
-                                    />
-                                </svg>
-                                <span>Sign In</span>
-                            </Link>
-                        </motion.div>
-                        <motion.div
-                            variants={buttonVariants}
-                            whileTap="tap"
-                            className="w-full sm:w-auto"
-                        >
-                            <Link
-                                href={route('register')}
-                                className="inline-flex items-center justify-center w-full gap-3 px-12 py-4 text-lg font-semibold transition-colors duration-300 bg-transparent border-2 rounded-full group text-cyan-300 border-cyan-300 hover:bg-cyan-300/20 sm:w-auto"
+                                    <svg
+                                        className="w-6 h-6 transition-transform duration-300 shrink-0 group-hover:rotate-12"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"
+                                        />
+                                    </svg>
+                                    <span>Sign In</span>
+                                </Link>
+                            </motion.div>
+                            <motion.div
+                                variants={buttonVariants}
+                                whileTap="tap"
+                                className="w-full sm:w-auto"
                             >
-                                <svg
-                                    className="w-6 h-6 transition-transform duration-300 shrink-0 group-hover:scale-110"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
+                                <Link
+                                    href={route('register')}
+                                    className="inline-flex items-center justify-center w-full gap-3 px-12 py-4 text-lg font-semibold transition-colors duration-300 bg-transparent border-2 rounded-full group text-cyan-300 border-cyan-300 hover:bg-cyan-300/20 sm:w-auto"
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M18 9v3m0 0v3m0-3h-3m-3 0H9m3-3V6m0 12v-3"
-                                    />
-                                </svg>
-                                <span>Sign Up</span>
-                            </Link>
+                                    <svg
+                                        className="w-6 h-6 transition-transform duration-300 shrink-0 group-hover:scale-110"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M18 9v3m0 0v3m0-3h-3m-3 0H9m3-3V6m0 12v-3"
+                                        />
+                                    </svg>
+                                    <span>Sign Up</span>
+                                </Link>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
+                    )}
 
                     {/* Additional Text for Training */}
                     <motion.p

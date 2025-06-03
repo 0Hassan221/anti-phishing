@@ -145,11 +145,19 @@ export default function Profile() {
                                     title="Upload your agent avatar"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 to-transparent"></div>
-                                    <img 
-                                        src="/assets/Eye.png" 
-                                        alt="Eye Logo" 
-                                        className="z-10 object-contain transition-transform duration-300 w-14 h-14" 
-                                    />
+                                    {user.avatar ? (
+                                        <img
+                                            src={user.avatar}
+                                            alt={user.name}
+                                            className="z-10 object-cover w-full h-full transition-transform duration-300 rounded-full"
+                                        />
+                                    ) : (
+                                        <img
+                                            src="/assets/Eye.png"
+                                            alt="Eye Logo"
+                                            className="z-10 object-contain transition-transform duration-300 w-14 h-14"
+                                        />
+                                    )}
                                 </div>
                             </div>
 

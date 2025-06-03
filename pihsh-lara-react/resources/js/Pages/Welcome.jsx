@@ -1,15 +1,15 @@
 import { Head } from '@inertiajs/react';
 import Header from '@/Components/Header';
 import Navbar from '@/Components/Navbar';
-import Services from '@/Pages/Services';
-import AboutUs from '@/Pages/AboutUs';
+import Services from '@/Pages/home/Services';
+import AboutUs from '@/Pages/home/AboutUs';
 import Footer from '@/Components/Footer';
-import ContactUs from '@/Pages/ContactUs';
+import ContactUs from '@/Pages/home/ContactUs';
 import CTA from '@/Components/CTA';
-import PhishingStats from './PhishingStats';
-import WhyMatters from './WhyMatters';
-import LatestPhishingTrends from './LatestPhishingTrends';
-import PhishingAwarenessQuiz from './PhishingAwarenessQuiz';
+import PhishingStats from './home/PhishingStats';
+import WhyMatters from './home/WhyMatters';
+import LatestPhishingTrends from './home/LatestPhishingTrends';
+import PhishingAwarenessQuiz from './home/PhishingAwarenessQuiz';
 
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
     const handleImageError = () => {

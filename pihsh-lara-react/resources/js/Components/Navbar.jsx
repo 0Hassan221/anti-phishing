@@ -3,7 +3,7 @@ import { Link, usePage, router } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Logo from '@/Components/Logo';
 
-const Navbar = ({ bgColor }) => {
+const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -135,80 +135,96 @@ const Navbar = ({ bgColor }) => {
                         ))}
                     </div>
 
-                    {/* Desktop User Menu */}
-                    <div
-                        className="relative items-center hidden md:flex"
-                        onMouseEnter={() => setUserMenuOpen(true)}
-                        onMouseLeave={() => setUserMenuOpen(false)}
-                    >
-                        <motion.button
-                            className="relative w-10 h-10 transition-all duration-300 border-2 rounded-full border-cyan-400/50 hover:border-cyan-300"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
+                    {/* Desktop Auth Section */}
+                    {isLoggedIn ? (
+                        /* Desktop User Menu - Show when logged in */
+                        <div
+                            className="relative items-center hidden md:flex"
+                            onMouseEnter={() => setUserMenuOpen(true)}
+                            onMouseLeave={() => setUserMenuOpen(false)}
                         >
-                            <svg
-                                className="w-full h-full p-1 text-blue-100"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                            <motion.button
+                                className="relative w-10 h-10 transition-all duration-300 border-2 rounded-full border-cyan-400/50 hover:border-cyan-300"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                />
-                            </svg>
-                            {/* Status indicator changes based on login status */}
-                            <div 
-                                className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-blue-800 ${
-                                    isLoggedIn ? "bg-green-400" : "bg-red-400"
-                                }`} 
-                            />
-                        </motion.button>
-
-                        <motion.div
-                            className="absolute right-0 w-48 overflow-hidden border rounded-lg shadow-xl top-12 bg-gray-900/95 border-cyan-400/20 backdrop-blur-md"
-                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                            animate={{
-                                opacity: userMenuOpen ? 1 : 0,
-                                y: userMenuOpen ? 0 : 10,
-                                scale: userMenuOpen ? 1 : 0.95,
-                            }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            <div className="p-2 space-y-1">
-                                {isLoggedIn ? (
-                                    <>
-                                        <UserMenuItem href={route("dashboard")} icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                            Profile
-                                        </UserMenuItem>
-                                        <UserMenuItem href="/settings" icon="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z">
-                                            Settings
-                                        </UserMenuItem>
-                                        <button
-                                            onClick={handleLogout}
-                                            className="flex items-center w-full px-4 py-2 text-left text-blue-100 transition-colors rounded-lg hover:bg-cyan-400/20 hover:text-cyan-300"
+                                <div className="w-full h-full rounded-full overflow-hidden">
+                                    {props.auth?.user?.avatar ? (
+                                        <img
+                                            src={props.auth.user.avatar}
+                                            alt={props.auth.user.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <svg
+                                            className="w-full h-full p-1 text-blue-100"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
                                         >
-                                            <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                            </svg>
-                                            Log Out
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <UserMenuItem href={route("login")} icon="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
-                                            Log In
-                                        </UserMenuItem>
-                                        <UserMenuItem href={route("register")} icon="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
-                                            Register
-                                        </UserMenuItem>
-                                    </>
-                                )}
-                            </div>
-                        </motion.div>
-                    </div>
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                            />
+                                        </svg>
+                                    )}
+                                </div>
+                                {/* Status indicator - positioned outside the image container */}
+                                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 rounded-full border-blue-800" />
+                            </motion.button>
+
+                            <motion.div
+                                className="absolute right-0 w-48 overflow-hidden border rounded-lg shadow-xl top-12 bg-gray-900/95 border-cyan-400/20 backdrop-blur-md"
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{
+                                    opacity: userMenuOpen ? 1 : 0,
+                                    y: userMenuOpen ? 0 : 10,
+                                    scale: userMenuOpen ? 1 : 0.95,
+                                }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <div className="p-2 space-y-1">
+                                    <UserMenuItem href={route("dashboard")} icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                        Profile
+                                    </UserMenuItem>
+                                    <UserMenuItem href="/settings" icon="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+                                        Settings
+                                    </UserMenuItem>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="flex items-center w-full px-4 py-2 text-left text-blue-100 transition-colors rounded-lg hover:bg-cyan-400/20 hover:text-cyan-300"
+                                    >
+                                        <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
+                                        Log Out
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </div>
+                    ) : (
+                        /* Desktop Sign In/Sign Up Buttons - Show when not logged in */
+                        <div className="items-center hidden space-x-4 md:flex">
+                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                <Link
+                                    href={route('login')}
+                                    className="px-4 py-2 text-sm font-medium text-blue-100 transition-colors duration-300 rounded-lg hover:text-cyan-300 hover:bg-cyan-400/20"
+                                >
+                                    Sign In
+                                </Link>
+                            </motion.div>
+                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                <Link
+                                    href={route('register')}
+                                    className="px-4 py-2 text-sm font-medium text-white transition-colors duration-300 border-2 rounded-lg bg-cyan-600 border-cyan-600 hover:bg-cyan-700 hover:border-cyan-700"
+                                >
+                                    Sign Up
+                                </Link>
+                            </motion.div>
+                        </div>
+                    )}
 
                     {/* Mobile Menu Button */}
                     <div className="md:hidden">
@@ -254,46 +270,51 @@ const Navbar = ({ bgColor }) => {
                     ))}
 
                     <div className="pt-4 border-t border-blue-700">
-                        <button
-                            onClick={() => setUserMenuOpen(!userMenuOpen)}
-                            className="flex items-center w-full p-3 space-x-3 text-left transition-colors rounded-lg hover:bg-cyan-400/20"
-                        >
-                            <div className="relative w-8 h-8 border-2 rounded-full border-cyan-400/50">
-                                <svg
-                                    className="w-full h-full p-1 text-blue-100"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
+                        {isLoggedIn ? (
+                            /* Mobile User Menu - Show when logged in */
+                            <>
+                                <button
+                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                    className="flex items-center w-full p-3 space-x-3 text-left transition-colors rounded-lg hover:bg-cyan-400/20"
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                    />
-                                </svg>
-                                {/* Status indicator changes based on login status */}
-                                <div 
-                                    className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-blue-800 ${
-                                        isLoggedIn ? "bg-green-400" : "bg-red-400"
-                                    }`} 
-                                />
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium text-white">{userName}</p>
-                                <p className="text-xs text-blue-200">
-                                    {isLoggedIn ? "Verified Account" : "Not Logged In"}
-                                </p>
-                            </div>
-                        </button>
+                                    <div className="relative w-8 h-8 border-2 rounded-full border-cyan-400/50">
+                                        <div className="w-full h-full rounded-full overflow-hidden">
+                                            {props.auth?.user?.avatar ? (
+                                                <img
+                                                    src={props.auth.user.avatar}
+                                                    alt={props.auth.user.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <svg
+                                                    className="w-full h-full p-1 text-blue-100"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                                    />
+                                                </svg>
+                                            )}
+                                        </div>
+                                        {/* Status indicator - positioned outside the image container */}
+                                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 border-2 rounded-full border-blue-800" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-white">{userName}</p>
+                                        <p className="text-xs text-blue-200">Verified Account</p>
+                                    </div>
+                                </button>
 
-                        <motion.div
-                            className="pl-4 ml-2 space-y-2 overflow-hidden"
-                            variants={menuVariants}
-                            animate={userMenuOpen ? "open" : "closed"}
-                        >
-                            {isLoggedIn ? (
-                                <>
+                                <motion.div
+                                    className="pl-4 ml-2 space-y-2 overflow-hidden"
+                                    variants={menuVariants}
+                                    animate={userMenuOpen ? "open" : "closed"}
+                                >
                                     <UserMenuItem href="/profile" icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                                         Profile
                                     </UserMenuItem>
@@ -309,18 +330,33 @@ const Navbar = ({ bgColor }) => {
                                         </svg>
                                         Logout
                                     </button>
-                                </>
-                            ) : (
-                                <>
-                                    <UserMenuItem href={route("login")} icon="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
-                                        Log In
-                                    </UserMenuItem>
-                                    <UserMenuItem href={route("register")} icon="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
-                                        Register
-                                    </UserMenuItem>
-                                </>
-                            )}
-                        </motion.div>
+                                </motion.div>
+                            </>
+                        ) : (
+                            /* Mobile Sign In/Sign Up Buttons - Show when not logged in */
+                            <div className="space-y-3">
+                                <Link
+                                    href={route('login')}
+                                    className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-blue-100 transition-colors duration-300 rounded-lg hover:text-cyan-300 hover:bg-cyan-400/20"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                    </svg>
+                                    Sign In
+                                </Link>
+                                <Link
+                                    href={route('register')}
+                                    className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition-colors duration-300 border-2 rounded-lg bg-cyan-600 border-cyan-600 hover:bg-cyan-700 hover:border-cyan-700"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                    </svg>
+                                    Sign Up
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
             </motion.div>

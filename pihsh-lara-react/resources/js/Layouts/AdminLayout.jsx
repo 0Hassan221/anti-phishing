@@ -105,8 +105,8 @@ export default function AdminLayout({ children }) {
                                             className="flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-300 transition duration-150 ease-in-out bg-gray-800 border border-gray-700 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-gray-800"
                                         >
                                             <img
-                                                className="w-8 h-8 mr-2 rounded-full"
-                                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth?.user?.name || 'Guest')}&background=0D8ABC&color=fff`}
+                                                className="w-8 h-8 mr-2 rounded-full object-cover"
+                                                src={auth?.user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(auth?.user?.name || 'Guest')}&background=0D8ABC&color=fff`}
                                                 alt={auth?.user?.name || 'Guest'}
                                             />
                                             <span>{auth?.user?.name || 'Guest'}</span>
@@ -196,8 +196,8 @@ export default function AdminLayout({ children }) {
                             <div className="flex items-center px-4">
                                 <div className="flex-shrink-0">
                                     <img
-                                        className="w-10 h-10 rounded-full"
-                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth?.user?.name || 'Guest')}&background=0D8ABC&color=fff`}
+                                        className="w-10 h-10 rounded-full object-cover"
+                                        src={auth?.user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(auth?.user?.name || 'Guest')}&background=0D8ABC&color=fff`}
                                         alt={auth?.user?.name || 'Guest'}
                                     />
                                 </div>

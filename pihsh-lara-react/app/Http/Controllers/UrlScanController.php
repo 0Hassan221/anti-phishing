@@ -22,7 +22,7 @@ class UrlScanController extends Controller
     
     public function show()
     {
-        return Inertia::render('UrlCheck');
+return Inertia::render('UrlCheck/UrlCheck');
     }
     
     public function scan(Request $request)

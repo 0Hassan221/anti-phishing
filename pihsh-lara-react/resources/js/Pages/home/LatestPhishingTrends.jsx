@@ -15,7 +15,7 @@ const LatestPhishingTrends = () => {
     return (
         <section
             id="phishing-trends"
-            className="w-full bg-white text-blue-900 py-16 px-4"
+            className="w-full px-4 py-16 text-blue-900 bg-white"
         >
             <motion.div
                 className="max-w-5xl mx-auto"
@@ -25,21 +25,21 @@ const LatestPhishingTrends = () => {
                 variants={sectionVariants}
             >
                 {/* Header */}
-                <div className="text-center mb-12">
-                    <h2 className="text-5xl md:text-6xl font-extrabold text-blue-900 relative inline-block">
+                <div className="mb-12 text-center">
+                    <h2 className="relative inline-block text-5xl font-extrabold text-blue-900 md:text-6xl">
                         Latest Phishing Trends
                         <span className="absolute -bottom-2 left-0 w-full h-1.5 bg-blue-900/30 rounded-full"></span>
                     </h2>
-                    <p className="mt-6 text-xl md:text-2xl text-blue-900/80 max-w-3xl mx-auto">
+                    <p className="max-w-3xl mx-auto mt-6 text-xl md:text-2xl text-blue-900/80">
                         Stay ahead of cybercriminals with the latest insights on phishing tactics and trends.
                     </p>
                 </div>
 
                 {/* Trends List */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                     {/* Trend 1: AI-Powered Phishing Attacks */}
                     <motion.div
-                        className="bg-blue-900/5 border border-blue-900/20 rounded-xl p-6 flex items-start space-x-4"
+                        className="flex items-start p-6 space-x-4 border bg-blue-900/5 border-blue-900/20 rounded-xl"
                         variants={itemVariants}
                     >
                         <div className="flex-shrink-0 mt-1">
@@ -58,7 +58,7 @@ const LatestPhishingTrends = () => {
                             </svg>
                         </div>
                         <div>
-                            <h3 className="text-xl font-semibold text-blue-900 mb-2">
+                            <h3 className="mb-2 text-xl font-semibold text-blue-900">
                                 AI-Powered Phishing Attacks
                             </h3>
                             <p className="text-blue-900/80">
@@ -69,7 +69,7 @@ const LatestPhishingTrends = () => {
 
                     {/* Trend 2: Smishing Surge (Unchanged Icon) */}
                     <motion.div
-                        className="bg-blue-900/5 border border-blue-900/20 rounded-xl p-6 flex items-start space-x-4"
+                        className="flex items-start p-6 space-x-4 border bg-blue-900/5 border-blue-900/20 rounded-xl"
                         variants={itemVariants}
                     >
                         <div className="flex-shrink-0 mt-1">
@@ -88,7 +88,7 @@ const LatestPhishingTrends = () => {
                             </svg>
                         </div>
                         <div>
-                            <h3 className="text-xl font-semibold text-blue-900 mb-2">
+                            <h3 className="mb-2 text-xl font-semibold text-blue-900">
                                 Smishing Surge
                             </h3>
                             <p className="text-blue-900/80">
@@ -99,7 +99,7 @@ const LatestPhishingTrends = () => {
 
                     {/* Trend 3: QR Code Phishing (Quishing) */}
                     <motion.div
-                        className="bg-blue-900/5 border border-blue-900/20 rounded-xl p-6 flex items-start space-x-4"
+                        className="flex items-start p-6 space-x-4 border bg-blue-900/5 border-blue-900/20 rounded-xl"
                         variants={itemVariants}
                     >
                         <div className="flex-shrink-0 mt-1">
@@ -118,7 +118,7 @@ const LatestPhishingTrends = () => {
                             </svg>
                         </div>
                         <div>
-                            <h3 className="text-xl font-semibold text-blue-900 mb-2">
+                            <h3 className="mb-2 text-xl font-semibold text-blue-900">
                                 QR Code Phishing (Quishing)
                             </h3>
                             <p className="text-blue-900/80">
@@ -129,7 +129,7 @@ const LatestPhishingTrends = () => {
 
                     {/* Trend 4: Social Media Targeting */}
                     <motion.div
-                        className="bg-blue-900/5 border border-blue-900/20 rounded-xl p-6 flex items-start space-x-4"
+                        className="flex items-start p-6 space-x-4 border bg-blue-900/5 border-blue-900/20 rounded-xl"
                         variants={itemVariants}
                     >
                         <div className="flex-shrink-0 mt-1">
@@ -148,7 +148,7 @@ const LatestPhishingTrends = () => {
                             </svg>
                         </div>
                         <div>
-                            <h3 className="text-xl font-semibold text-blue-900 mb-2">
+                            <h3 className="mb-2 text-xl font-semibold text-blue-900">
                                 Social Media Targeting
                             </h3>
                             <p className="text-blue-900/80">
@@ -159,7 +159,7 @@ const LatestPhishingTrends = () => {
                 </div>
 
                 {/* Call to Action */}
-                <div className="text-center mt-12">
+                <div className="mt-12 text-center">
                     <p className="text-lg text-blue-900/80">
                         Protect yourself by staying informed. Check back regularly for updates on emerging threats.
                     </p>
