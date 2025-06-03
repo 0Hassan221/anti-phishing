@@ -10,7 +10,7 @@ class ContactController extends Controller
     public function show()
     {
         // Return the contact page if you have one
-        return Inertia::render('Contact'); // Adjust to your actual component/page
+        return Inertia::render('home/Contact'); // Adjust to your actual component/page
     }
 
     public function store(Request $request)

@@ -43,7 +43,7 @@ Route::get('/about', function () {
 })->name('about');
 
 Route::get('/contact', function () {
-    return Inertia::render('ContactUs');
+    return Inertia::render('home/ContactUs');
 })->name('contact');
 
 Route::get('/url-check', [UrlScanController::class, 'show'])->name('url.check');
