@@ -122,7 +122,7 @@ function Header({ auth }) {
                 {/* Header Content */}
                 <div className="space-y-10">
                     {/* Subheading */}
-                    <p className="text-sm font-medium tracking-widest uppercase md:text-lg text-cyan-400">
+                    <p className="pt-8 text-sm font-medium tracking-widest uppercase md:pt-0 md:text-lg text-cyan-400">
                         Advanced Cybersecurity Solutions
                     </p>
 
