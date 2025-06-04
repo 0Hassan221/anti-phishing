@@ -24,14 +24,15 @@ export default function Login({ status, canResetPassword }) {
     return (
         <>
             <Head title="Log in" />
-            <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-                <Navbar />
-                <div className="flex items-center justify-center flex-grow px-4 py-16 sm:px-6 lg:px-8">
-                    <div className="w-full max-w-md p-8 transition-all duration-300 transform bg-white shadow-2xl rounded-xl hover:shadow-3xl">
+            <div className="flex flex-col min-h-screen bg-white">
+                <div className="flex items-center justify-center flex-grow px-4 py-8 sm:px-6 lg:px-8">
+                    <div className="w-full max-w-md p-8 transition-all duration-300 transform bg-white rounded-xl">
                         {/* Logo Section */}
-                        <div className="flex justify-center mb-8">
-                            <Logo color='dark' size='medium' />
+                        <div className="flex justify-center mb-10">
+                            <Logo color='dark' size='medium' />                            
                         </div>
+                        
+                        <h2 className="mb-6 text-2xl font-bold text-center text-gray-900">Log in to your account</h2>
 
                         {/* Status Message */}
                         {status && (
@@ -44,7 +45,7 @@ export default function Login({ status, canResetPassword }) {
                         <div className="mb-6">
                             <a
                                 href={route('auth.google')}
-                                className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-300 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 hover:shadow-md focus:outline-none "
+                                className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-300 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
                             >
                                 <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -73,14 +74,14 @@ export default function Login({ status, canResetPassword }) {
                                 <InputLabel
                                     htmlFor="email"
                                     value="Email"
-                                    className="font-medium text-gray-800"
+                                    className="block mb-2 text-sm font-medium text-gray-700"
                                 />
                                 <TextInput
                                     id="email"
                                     type="email"
                                     name="email"
                                     value={data.email}
-                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
+                                    className="block w-full px-4 py-3 text-gray-900 transition-all duration-300 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                                     autoComplete="username"
                                     isFocused={true}
                                     onChange={(e) => setData('email', e.target.value)}
@@ -93,14 +94,14 @@ export default function Login({ status, canResetPassword }) {
                                 <InputLabel
                                     htmlFor="password"
                                     value="Password"
-                                    className="font-medium text-gray-800"
+                                    className="block mb-2 text-sm font-medium text-gray-700"
                                 />
                                 <TextInput
                                     id="password"
                                     type="password"
                                     name="password"
                                     value={data.password}
-                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
+                                    className="block w-full px-4 py-3 text-gray-900 transition-all duration-300 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                                     autoComplete="current-password"
                                     onChange={(e) => setData('password', e.target.value)}
                                 />
@@ -125,14 +126,13 @@ export default function Login({ status, canResetPassword }) {
                                 {canResetPassword && (
                                     <Link
                                         href={route('password.request')}
-                                        className="text-sm underline transition-colors duration-200 rounded-md text-cyan-600 hover:text-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2"
+                                        className="text-sm text-cyan-600 hover:text-cyan-800 focus:outline-none focus:underline"
                                     >
                                         Forgot your password?
                                     </Link>
                                 )}
                                 <PrimaryButton
-                                    className={`ml-4 px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg shadow-md hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-400 transition-all duration-300 ${processing ? 'opacity-60 cursor-not-allowed' : ''
-                                        }`}
+                                    className={`ml-4 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg shadow hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-300 ${processing ? 'opacity-60 cursor-not-allowed' : ''}`}
                                     disabled={processing}
                                 >
                                     Log in
@@ -141,12 +141,12 @@ export default function Login({ status, canResetPassword }) {
                         </form>
 
                         {/* Register Link */}
-                        <div className="mt-6 text-center">
+                        <div className="mt-8 text-center">
                             <p className="text-sm text-gray-600">
                                 Don't have an account?{' '}
                                 <Link
                                     href={route('register')}
-                                    className="font-medium transition-colors duration-200 text-cyan-600 hover:text-cyan-800"
+                                    className="font-medium text-cyan-600 hover:text-cyan-800 hover:underline"
                                 >
                                     Sign up here
                                 </Link>

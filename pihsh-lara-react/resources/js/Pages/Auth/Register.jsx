@@ -31,14 +31,15 @@ export default function Register() {
     return (
         <>
             <Head title="Register" />
-            <div className="flex flex-col min-h-screen pt-10 bg-gradient-to-b from-gray-50 to-gray-100">
-                <Navbar />
-                <div className="flex items-center justify-center flex-grow px-4 py-16 sm:px-6 lg:px-8">
-                    <div className="w-full max-w-md p-8 transition-all duration-300 transform bg-white shadow-2xl rounded-xl hover:shadow-3xl">
+            <div className="flex flex-col min-h-screen bg-white">
+                <div className="flex items-center justify-center flex-grow px-4 py-8 sm:px-6 lg:px-8">
+                    <div className="w-full max-w-md p-8 transition-all duration-300 transform bg-white rounded-xl">
                         {/* Logo Section */}
-                        <div className="flex justify-center mb-8">
-                            <Logo color='dark'/>
+                        <div className="flex justify-center mb-10">
+                            <Logo color='dark' size='medium' />
                         </div>
+                        
+                        <h2 className="mb-6 text-2xl font-bold text-center text-gray-900">Create your account</h2>
 
                         {/* Google Sign-Up Button */}
                         <div className="mb-6">
@@ -73,13 +74,13 @@ export default function Register() {
                                 <InputLabel
                                     htmlFor="name"
                                     value="Name"
-                                    className="font-medium text-gray-800"
+                                    className="block mb-2 text-sm font-medium text-gray-700"
                                 />
                                 <TextInput
                                     id="name"
                                     name="name"
                                     value={data.name}
-                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
+                                    className="block w-full px-4 py-3 text-gray-900 transition-all duration-300 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                                     autoComplete="name"
                                     isFocused={true}
                                     onChange={(e) => setData('name', e.target.value)}
@@ -93,14 +94,14 @@ export default function Register() {
                                 <InputLabel
                                     htmlFor="email"
                                     value="Email"
-                                    className="font-medium text-gray-800"
+                                    className="block mb-2 text-sm font-medium text-gray-700"
                                 />
                                 <TextInput
                                     id="email"
                                     type="email"
                                     name="email"
                                     value={data.email}
-                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
+                                    className="block w-full px-4 py-3 text-gray-900 transition-all duration-300 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                                     autoComplete="username"
                                     onChange={(e) => setData('email', e.target.value)}
                                     required
@@ -113,14 +114,14 @@ export default function Register() {
                                 <InputLabel
                                     htmlFor="password"
                                     value="Password"
-                                    className="font-medium text-gray-800"
+                                    className="block mb-2 text-sm font-medium text-gray-700"
                                 />
                                 <TextInput
                                     id="password"
                                     type="password"
                                     name="password"
                                     value={data.password}
-                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
+                                    className="block w-full px-4 py-3 text-gray-900 transition-all duration-300 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                                     autoComplete="new-password"
                                     onChange={(e) => setData('password', e.target.value)}
                                     required
@@ -133,14 +134,14 @@ export default function Register() {
                                 <InputLabel
                                     htmlFor="password_confirmation"
                                     value="Confirm Password"
-                                    className="font-medium text-gray-800"
+                                    className="block mb-2 text-sm font-medium text-gray-700"
                                 />
                                 <TextInput
                                     id="password_confirmation"
                                     type="password"
                                     name="password_confirmation"
                                     value={data.password_confirmation}
-                                    className="block w-full mt-2 text-gray-900 transition-all duration-300 border-gray-200 rounded-lg shadow-sm bg-gray-50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500"
+                                    className="block w-full px-4 py-3 text-gray-900 transition-all duration-300 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                                     autoComplete="new-password"
                                     onChange={(e) => setData('password_confirmation', e.target.value)}
                                     required
@@ -161,7 +162,7 @@ export default function Register() {
                                     I agree to the{" "}
                                     <Link
                                         href="/terms-of-use"
-                                        className="font-medium underline transition-colors duration-200 text-cyan-600 hover:text-cyan-800"
+                                        className="font-medium text-cyan-600 hover:text-cyan-800 hover:underline"
                                     >
                                         Terms of Use
                                     </Link>
@@ -173,15 +174,15 @@ export default function Register() {
                             <div className="flex items-center justify-between">
                                 <Link
                                     href={route('login')}
-                                    className="text-sm underline transition-colors duration-200 rounded-md text-cyan-600 hover:text-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2"
+                                    className="text-sm text-cyan-600 hover:text-cyan-800 focus:outline-none focus:underline"
                                 >
                                     Already registered?
                                 </Link>
                                 <PrimaryButton
-                                    className={`ml-4 px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg shadow-md hover:from-cyan-600 hover:to-blue-700 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 transition-all duration-300 ${
+                                    className={`ml-4 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg shadow hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-300 ${
                                         processing || !agreedToTerms ? 'opacity-60 cursor-not-allowed' : ''
                                     }`}
-                                    disabled={processing || !agreedToTerms} // Disable إذا مفيش موافقة
+                                    disabled={processing || !agreedToTerms}
                                 >
                                     Register
                                 </PrimaryButton>
