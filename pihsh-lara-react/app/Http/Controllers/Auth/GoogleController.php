@@ -54,9 +54,12 @@ class GoogleController extends Controller
             
             if ($existingUser) {
                 // User exists with email, link Google account
+                // Clean avatar URL by removing size parameters that can cause image loading issues
+                $cleanedAvatar = $googleUser->avatar ? preg_replace('/=s[0-9]+-c$/', '', $googleUser->avatar) : null;
+                
                 $existingUser->update([
                     'google_id' => $googleUser->id,
-                    'avatar' => $googleUser->avatar,
+                    'avatar' => $cleanedAvatar,
                     'provider' => 'google',
                 ]);
                 
@@ -65,11 +68,14 @@ class GoogleController extends Controller
             }
             
             // Create new user
+            // Clean avatar URL by removing size parameters that can cause image loading issues
+            $cleanedAvatar = $googleUser->avatar ? preg_replace('/=s[0-9]+-c$/', '', $googleUser->avatar) : null;
+            
             $newUser = User::create([
                 'name' => $googleUser->name,
                 'email' => $googleUser->email,
                 'google_id' => $googleUser->id,
-                'avatar' => $googleUser->avatar,
+                'avatar' => $cleanedAvatar,
                 'provider' => 'google',
                 'email_verified_at' => now(), // Google emails are verified
                 'password' => Hash::make(Str::random(24)), // Random password

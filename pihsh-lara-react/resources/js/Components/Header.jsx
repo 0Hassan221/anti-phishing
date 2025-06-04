@@ -82,7 +82,8 @@ import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
 function Header({ auth }) {
-    const userName = auth?.user?.name || "Guest"; // Fallback to "Guest" if not logged in
+    const fullName = auth?.user?.name || "Guest";
+    const userName = fullName.split(" ").slice(0, 2).join(" ");
     const isLoggedIn = auth?.user !== null; // Check if user is logged in
 
     console.log(auth.user?.name)
@@ -260,7 +261,7 @@ function Header({ auth }) {
 
                     {/* Trust Indicators */}
                     <div className="flex flex-col justify-center gap-6 mt-8 text-sm text-gray-400 sm:flex-row md:text-base">
-                    
+
                         <span className="flex items-center gap-2">
                             <svg className="w-5 h-5 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M10 2a8 8 0 00-8 8c0 4.418 3.582 8 8 8s8-3.582 8-8a8 8 0 00-8-8zm-1 11l-3-3 1.5-1.5L9 10l4-4 1.5 1.5L9 13z" />

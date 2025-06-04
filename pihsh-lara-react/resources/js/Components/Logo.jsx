@@ -23,11 +23,15 @@ const Logo = ({
         column: 'flex-col items-center'
     };
 
-    // Handle smooth scroll if provided
+    // Always navigate to home page, but still allow onClick for animations/effects
     const handleClick = (e) => {
+        // If onClick is provided, call it for animations/effects
         if (onClick) {
             onClick(e);
         }
+        
+        // Navigate to home page
+        window.location.href = '/';
     };
 
     return (
