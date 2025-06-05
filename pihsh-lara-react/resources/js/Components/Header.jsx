@@ -80,13 +80,25 @@
 
 import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import { useAuthStore } from '@/stores';
+import { useEffect } from 'react';
 
 function Header({ auth }) {
-    const fullName = auth?.user?.name || "Guest";
-    const userName = fullName.split(" ").slice(0, 2).join(" ");
-    const isLoggedIn = auth?.user !== null; // Check if user is logged in
+    // Zustand store
+    const { user, isAuthenticated, setUser } = useAuthStore();
 
-    console.log(auth.user?.name)
+    // Sync Inertia auth with Zustand store
+    useEffect(() => {
+        if (auth?.user && (!user || user.id !== auth.user.id)) {
+            setUser(auth.user);
+        }
+    }, [auth?.user, user, setUser]);
+
+    // Use store data with fallback to props
+    const currentUser = user || auth?.user;
+    const fullName = currentUser?.name || "Guest";
+    const userName = fullName.split(" ").slice(0, 2).join(" ");
+    const isLoggedIn = isAuthenticated || auth?.user !== null;
 
     // Simplified Animation Variants
     const containerVariants = {

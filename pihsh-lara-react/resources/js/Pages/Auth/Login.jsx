@@ -4,8 +4,8 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
-import Navbar from '@/Components/Navbar';
 import Logo from '@/Components/Logo';
+import { useAuthStore, useUiStore } from '@/stores';
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -14,9 +14,29 @@ export default function Login({ status, canResetPassword }) {
         remember: false,
     });
 
+    // Zustand stores
+    const { setUser } = useAuthStore();
+    const { addNotification } = useUiStore();
+
     const submit = (e) => {
         e.preventDefault();
         post(route('login'), {
+            onSuccess: (page) => {
+                // Update Zustand store with user data
+                if (page.props.auth?.user) {
+                    setUser(page.props.auth.user);
+                    addNotification({
+                        type: 'success',
+                        message: `Welcome back, ${page.props.auth.user.name}!`
+                    });
+                }
+            },
+            onError: () => {
+                addNotification({
+                    type: 'error',
+                    message: 'Login failed. Please check your credentials.'
+                });
+            },
             onFinish: () => reset('password'),
         });
     };

@@ -51,6 +51,16 @@ Route::post('/url-scan', [UrlScanController::class, 'scan'])->name('url.scan');
 Route::post('/url-status', [UrlScanController::class, 'checkStatus'])->name('url.status');
 Route::match(['get', 'post'], '/url-report', [UrlScanController::class, 'generateReport'])->name('url.report');
 
+// URL Scan Results Page
+Route::get('/url-scan-results', function () {
+    return Inertia::render('UrlScanResults');
+})->name('url.scan.results');
+
+// URL Scan Navigation Demo Page
+Route::get('/url-scan-navigation-demo', function () {
+    return Inertia::render('UrlScanNavigationDemo');
+})->name('url.scan.navigation.demo');
+
 // Malware Detection Routes with job-based processing and progress tracking
 Route::get('/malware-detection', [MalwareDetectionController::class, 'show'])->name('malware.detection');
 Route::post('/malware-scan', [MalwareDetectionController::class, 'scanFile'])->name('malware.scan');

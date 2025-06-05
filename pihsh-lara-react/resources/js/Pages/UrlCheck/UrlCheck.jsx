@@ -1,8 +1,8 @@
 import Navbar from '@/Components/Navbar';
-import { Head } from '@inertiajs/react';
-import { useState, useEffect, useRef } from 'react';
+import { Head, Link } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import { useUrlScanStore } from '@/stores';
 
 // Engine Results Category Component
 const EngineResultsCategory = ({ title, category, engineResults, bgColor, borderColor, textColor, badgeBgColor, badgeTextColor }) => {
@@ -56,262 +56,43 @@ const EngineResultsCategory = ({ title, category, engineResults, bgColor, border
 };
 
 export default function UrlCheck() {
-    const [url, setUrl] = useState('');
-    const [result, setResult] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [scanData, setScanData] = useState(null);
-    const [fromCache, setFromCache] = useState(false);
+    // Local state for report generation
     const [generatingReport, setGeneratingReport] = useState(false);
-    const [scanTime, setScanTime] = useState(null);
-    // jobId is used in checkJobStatus function
-    const [jobId, setJobId] = useState(null);
-    const [progress, setProgress] = useState(0);
-    const [statusMessage, setStatusMessage] = useState('');
-    const [showDetails, setShowDetails] = useState(false);
-    const [recentScans, setRecentScans] = useState([]);
-    const [showRecentScans, setShowRecentScans] = useState(false);
-    const urlInputRef = useRef(null);
-    const statusCheckIntervalRef = useRef(null);
 
-    // Load recent scans from localStorage
-    const loadRecentScans = () => {
-        try {
-            const savedScans = localStorage.getItem('recentUrlScans');
-            if (savedScans) {
-                setRecentScans(JSON.parse(savedScans));
-            }
-        } catch (error) {
-            console.error('Error loading recent scans:', error);
-        }
-    };
+    // Zustand store
+    const {
+        url,
+        result,
+        loading,
+        scanData,
+        fromCache,
+        scanTime,
+        jobId,
+        progress,
+        statusMessage,
+        showDetails,
+        recentScans,
+        showRecentScans,
+        statusCheckInterval,
+        // Actions
+        setUrl,
+        setShowDetails,
+        setShowRecentScans,
+        clearRecentScans,
+        handleUrlCheck,
+        saveToRecentScans
+    } = useUrlScanStore();
 
-    // Save a new scan to recent scans
-    const saveToRecentScans = (scannedUrl, scanResult) => {
-        try {
-            const newScan = {
-                id: Date.now(),
-                url: scannedUrl,
-                date: new Date().toISOString(),
-                status: scanResult.status,
-                threatLevel: scanResult.details?.threatLevel || 'unknown'
-            };
-
-            const updatedScans = [newScan, ...recentScans.slice(0, 9)]; // Keep only 10 most recent
-            setRecentScans(updatedScans);
-            localStorage.setItem('recentUrlScans', JSON.stringify(updatedScans));
-        } catch (error) {
-            console.error('Error saving recent scan:', error);
-        }
-    };
-
-    // Clear interval on unmount and load recent scans on mount
+    // Clear interval on unmount
     useEffect(() => {
-        loadRecentScans();
-
         return () => {
-            if (statusCheckIntervalRef.current) {
-                clearInterval(statusCheckIntervalRef.current);
+            if (statusCheckInterval) {
+                clearInterval(statusCheckInterval);
             }
         };
-    }, []);
+    }, [statusCheckInterval]);
 
-    const handleUrlCheck = async () => {
-        if (!url.trim()) {
-            setResult({ status: 'error', message: 'Please enter a valid URL to scan.' });
-            return;
-        }
 
-        setLoading(true);
-        setResult(null);
-        setScanData(null);
-        setFromCache(false);
-        setProgress(0);
-        setStatusMessage('');
-        setShowDetails(false);
-
-        // Clear any existing interval
-        if (statusCheckIntervalRef.current) {
-            clearInterval(statusCheckIntervalRef.current);
-            statusCheckIntervalRef.current = null;
-        }
-
-        const startTime = performance.now();
-
-        try {
-            const response = await axios.post('/url-scan', { url });
-
-            if (response.data.success) {
-                // If the results are immediately available (from cache)
-                if (response.data.completed) {
-                    const endTime = performance.now();
-                    const timeElapsed = ((endTime - startTime) / 1000).toFixed(2);
-                    setScanTime(timeElapsed);
-
-                    const scanResults = response.data.results;
-                    setScanData(scanResults);
-                    setFromCache(response.data.fromCache || false);
-
-                    // Determine if URL is safe based on scan results
-                    handleScanResults(scanResults);
-                    setLoading(false);
-                } else {
-                    // Job was queued, start polling for status
-                    setJobId(response.data.jobId);
-                    setStatusMessage('Analysis queued, starting soon...');
-                    setProgress(5);
-
-                    // Start polling for job status
-                    statusCheckIntervalRef.current = setInterval(() => {
-                        checkJobStatus(response.data.jobId, startTime);
-                    }, 2000); // Check every 2 seconds
-                }
-            } else {
-                setResult({
-                    status: 'error',
-                    message: response.data.message || 'Failed to scan URL. Please try again later.'
-                });
-                setLoading(false);
-            }
-        } catch (error) {
-            console.error('URL scan error:', error);
-
-            if (error.response?.status === 429) {
-                // Rate limit error
-                setResult({
-                    status: 'error',
-                    message: 'Rate limit exceeded. Please try again in a few moments.'
-                });
-            } else {
-                setResult({
-                    status: 'error',
-                    message: error.response?.data?.message || 'An error occurred while scanning the URL.'
-                });
-            }
-            setLoading(false);
-        }
-    };
-
-    const checkJobStatus = async (jobId, startTime) => {
-        try {
-            const response = await axios.post('/url-status', { jobId });
-
-            if (response.data.success) {
-                const status = response.data.status;
-
-                // Update progress
-                setProgress(status.progress || 0);
-                setStatusMessage(status.message || 'Processing...');
-
-                if (response.data.completed) {
-                    // Stop polling
-                    if (statusCheckIntervalRef.current) {
-                        clearInterval(statusCheckIntervalRef.current);
-                        statusCheckIntervalRef.current = null;
-                    }
-
-                    const endTime = performance.now();
-                    const timeElapsed = ((endTime - startTime) / 1000).toFixed(2);
-                    setScanTime(timeElapsed);
-
-                    // Handle completed status
-                    if (status.status === 'completed') {
-                        setFromCache(status.fromCache || false);
-                        setScanData(status.results);
-                        handleScanResults(status.results);
-                    } else {
-                        // Failed
-                        setResult({
-                            status: 'error',
-                            message: status.message || 'Scan failed. Please try again.'
-                        });
-                    }
-
-                    setLoading(false);
-                }
-            } else {
-                // Error getting status
-                if (statusCheckIntervalRef.current) {
-                    clearInterval(statusCheckIntervalRef.current);
-                    statusCheckIntervalRef.current = null;
-                }
-
-                setResult({
-                    status: 'error',
-                    message: 'Failed to get scan status. Please try again.'
-                });
-                setLoading(false);
-            }
-        } catch (error) {
-            console.error('Status check error:', error);
-
-            // Stop polling on error
-            if (statusCheckIntervalRef.current) {
-                clearInterval(statusCheckIntervalRef.current);
-                statusCheckIntervalRef.current = null;
-            }
-
-            setResult({
-                status: 'error',
-                message: 'Failed to check scan status. Please try again.'
-            });
-            setLoading(false);
-        }
-    };
-
-    const handleScanResults = (scanResults) => {
-        const maliciousEngines = scanResults.stats.malicious || 0;
-        const suspiciousEngines = scanResults.stats.suspicious || 0;
-        const totalEngines = scanResults.stats.total_engines || 0;
-
-        let resultData;
-
-        if (maliciousEngines > 0) {
-            resultData = {
-                status: 'unsafe',
-                message: `Alert: Potential phishing threat detected! ${maliciousEngines} security vendors flagged this URL as malicious.`,
-                details: {
-                    threatLevel: scanResults.threat_level,
-                    reputation: scanResults.reputation,
-                    categories: scanResults.categories,
-                    engineResults: scanResults.engine_results,
-                    lastAnalysisDate: scanResults.last_analysis_date,
-                    stats: scanResults.stats
-                }
-            };
-        } else if (suspiciousEngines > 0) {
-            resultData = {
-                status: 'warning',
-                message: `Caution: ${suspiciousEngines} security vendors flagged this URL as suspicious.`,
-                details: {
-                    threatLevel: scanResults.threat_level,
-                    reputation: scanResults.reputation,
-                    categories: scanResults.categories,
-                    engineResults: scanResults.engine_results,
-                    lastAnalysisDate: scanResults.last_analysis_date,
-                    stats: scanResults.stats
-                }
-            };
-        } else {
-            resultData = {
-                status: 'safe',
-                message: `This URL appears to be safe. No security vendors flagged this URL out of ${totalEngines} checked.`,
-                details: {
-                    threatLevel: scanResults.threat_level,
-                    reputation: scanResults.reputation,
-                    categories: scanResults.categories,
-                    engineResults: scanResults.engine_results,
-                    lastAnalysisDate: scanResults.last_analysis_date,
-                    stats: scanResults.stats
-                }
-            };
-        }
-
-        // Set the result state
-        setResult(resultData);
-
-        // Save to recent scans
-        saveToRecentScans(url, resultData);
-    };
 
     const handleGenerateReport = async () => {
         if (!url.trim() || !scanData) return;
@@ -420,7 +201,6 @@ export default function UrlCheck() {
                                             onChange={(e) => setUrl(e.target.value)}
                                             className="w-full p-5 text-white transition-all duration-300 border shadow-inner bg-gray-700/50 border-cyan-500/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder-cyan-400/70 disabled:bg-gray-600/50 disabled:cursor-not-allowed"
                                             disabled={loading}
-                                            ref={urlInputRef}
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
                                                     handleUrlCheck();
@@ -459,11 +239,17 @@ export default function UrlCheck() {
                                     <div className="flex items-center justify-between mb-3">
                                         <h3 className="text-lg font-semibold text-cyan-300">Recent Scans</h3>
                                         <div className="flex items-center space-x-2">
+                                            <Link
+                                                href="/url-scan-results"
+                                                className="px-3 py-1 text-xs font-medium text-cyan-300 bg-cyan-900/30 border border-cyan-700/50 rounded-lg hover:bg-cyan-800/40 transition-colors"
+                                                title="View All Results"
+                                            >
+                                                View All
+                                            </Link>
                                             <button
                                                 onClick={() => {
                                                     if (confirm('Are you sure you want to clear all scan history?')) {
-                                                        setRecentScans([]);
-                                                        localStorage.removeItem('recentUrlScans');
+                                                        clearRecentScans();
                                                     }
                                                 }}
                                                 className="p-1 text-gray-400 rounded-full hover:bg-gray-700 hover:text-red-400"

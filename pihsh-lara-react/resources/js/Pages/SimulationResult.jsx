@@ -1,17 +1,23 @@
 import Navbar from '@/Components/Navbar';
 import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import { useSimulationStore } from '@/stores';
 
-export default function SimulationResults({ score = 80, totalSteps = 5 }) {
-    // Calculate results (assuming these props come from the simulation)
-    const correctAnswers = Math.floor(score / 20); // Each correct answer is 20 points
-    const accuracy = Math.round((correctAnswers / totalSteps) * 100);
+export default function SimulationResults() {
+    // Get results from simulation store
+    const { getResults, getOverallStats, getHistory } = useSimulationStore();
+    const results = getResults();
+    const stats = getOverallStats();
+    const history = getHistory();
+
+    const { score, totalAnswered, percentage } = results;
 
     // Feedback based on performance
     const getFeedback = () => {
-        if (accuracy >= 80) return "Great job! You’re a phishing detection pro.";
-        if (accuracy >= 50) return "Not bad! Keep sharpening your skills.";
-        return "Room to grow. Practice makes perfect!";
+        if (percentage >= 80) return "Great job! You’re a phishing detection pro.";
+        if (percentage >= 60) return "Good work! Keep sharpening your skills.";
+        if (percentage >= 40) return "Not bad! Practice makes perfect.";
+        return "Keep learning! Cybersecurity skills take time to develop.";
     };
 
     // Animation Variants
@@ -73,32 +79,47 @@ export default function SimulationResults({ score = 80, totalSteps = 5 }) {
                                 className="p-6 border shadow-lg bg-gray-700/50 rounded-xl border-cyan-500/20"
                                 variants={statVariants}
                             >
-                                <p className="text-sm uppercase text-cyan-400">Total Score</p>
-                                <p className="mt-2 text-3xl font-bold text-white">{score}/{totalSteps * 20}</p>
-                            </motion.div>
-                            <motion.div
-                                className="p-6 border shadow-lg bg-gray-700/50 rounded-xl border-cyan-500/20"
-                                variants={statVariants}
-                            >
-                                <p className="text-sm uppercase text-cyan-400">Correct Answers</p>
-                                <p className="mt-2 text-3xl font-bold text-white">{correctAnswers}/{totalSteps}</p>
+                                <p className="text-sm uppercase text-cyan-400">Score</p>
+                                <p className="mt-2 text-3xl font-bold text-white">{score}/{totalAnswered}</p>
                             </motion.div>
                             <motion.div
                                 className="p-6 border shadow-lg bg-gray-700/50 rounded-xl border-cyan-500/20"
                                 variants={statVariants}
                             >
                                 <p className="text-sm uppercase text-cyan-400">Accuracy</p>
-                                <p className="mt-2 text-3xl font-bold text-white">{accuracy}%</p>
+                                <p className="mt-2 text-3xl font-bold text-white">{percentage}%</p>
+                            </motion.div>
+                            <motion.div
+                                className="p-6 border shadow-lg bg-gray-700/50 rounded-xl border-cyan-500/20"
+                                variants={statVariants}
+                            >
+                                <p className="text-sm uppercase text-cyan-400">Best Score</p>
+                                <p className="mt-2 text-3xl font-bold text-white">{stats.bestScore}%</p>
                             </motion.div>
                         </div>
 
                         {/* Feedback */}
                         <div className="mb-10 text-center">
                             <p className="text-xl text-gray-300">{getFeedback()}</p>
-                            {accuracy < 80 && (
+                            {percentage < 80 && (
                                 <p className="mt-2 font-mono text-sm text-cyan-300">
                                     Tip: Look for suspicious domains and urgent language in phishing attempts.
                                 </p>
+                            )}
+
+                            {/* Overall Stats */}
+                            {stats.totalSimulations > 1 && (
+                                <div className="mt-6 p-4 bg-gray-700/30 rounded-lg">
+                                    <p className="text-sm text-gray-400 mb-2">Your Progress</p>
+                                    <div className="flex justify-center space-x-6 text-sm">
+                                        <span className="text-cyan-300">
+                                            Simulations: {stats.totalSimulations}
+                                        </span>
+                                        <span className="text-cyan-300">
+                                            Average: {stats.averageScore}%
+                                        </span>
+                                    </div>
+                                </div>
                             )}
                         </div>
 

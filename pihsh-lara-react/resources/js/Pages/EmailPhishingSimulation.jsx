@@ -1,37 +1,118 @@
 import Navbar from '@/Components/Navbar';
 import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { useSimulationStore, useUiStore } from '@/stores';
 
 export default function EmailPhishingSimulation() {
-    const [step, setStep] = useState(1); // Current simulation step
-    const [score, setScore] = useState(0); // User score
-    const [result, setResult] = useState(null); // Result of current choice
-    const totalSteps = 5; // Total number of simulations
+    // Simulation store
+    const {
+        currentQuestion,
+        score,
+        answers,
+        isCompleted,
+        answerQuestion,
+        nextQuestion,
+        resetSimulation,
+        completeSimulation,
+        setSimulationType,
+        getCurrentAnswer,
+        getResults
+    } = useSimulationStore();
 
-    // Sample simulation data (replace with dynamic data later)
-    const simulation = {
-        sender: "support@yourbank.com",
-        subject: "Urgent: Verify Your Account Now!",
-        body: "Dear Customer,\n\nWe’ve detected unusual activity on your account. Click the link below to verify your identity within 24 hours or your account will be suspended.\n\n[Verify Now](http://yourbank-security.com/login)",
-        isPhishing: true,
-        explanation: "The domain 'yourbank-security.com' is not the official bank site, and urgent demands are common phishing tactics."
-    };
+    const { addNotification } = useUiStore();
+
+    // Constants
+    const totalSteps = 5; // Total number of simulations
+    const step = currentQuestion + 1; // Use currentQuestion as step (1-based for UI)
+
+    // Set simulation type on mount and ensure we have valid data
+    useEffect(() => {
+        setSimulationType('email');
+        // If we're past the available simulations, reset
+        if (currentQuestion >= totalSteps) {
+            resetSimulation();
+        }
+    }, [setSimulationType, currentQuestion, totalSteps, resetSimulation]);
+
+    // Email simulation data
+    const emailSimulations = [
+        {
+            sender: "support@yourbank.com",
+            subject: "Urgent: Verify Your Account Now!",
+            body: "Dear Customer,\n\nWe’ve detected unusual activity on your account. Click the link below to verify your identity within 24 hours or your account will be suspended.\n\n[Verify Now](http://yourbank-security.com/login)",
+            isPhishing: true,
+            explanation: "The domain 'yourbank-security.com' is not the official bank site, and urgent demands are common phishing tactics."
+        },
+        {
+            sender: "noreply@amazon.com",
+            subject: "Your Order Confirmation #12345",
+            body: "Thank you for your order!\n\nOrder Details:\n- Product: Wireless Headphones\n- Total: $89.99\n\nYour order will be shipped within 2-3 business days.",
+            isPhishing: false,
+            explanation: "This appears to be a legitimate order confirmation with no suspicious links or urgent demands."
+        },
+        {
+            sender: "security@paypal.com",
+            subject: "Account Limitation Notice",
+            body: "Your PayPal account has been limited due to suspicious activity.\n\nClick here to restore access: http://paypal-security.net/restore\n\nFailure to verify within 48 hours will result in permanent suspension.",
+            isPhishing: true,
+            explanation: "The domain 'paypal-security.net' is fake. Real PayPal emails come from @paypal.com and don't use urgent threats."
+        },
+        {
+            sender: "team@github.com",
+            subject: "Weekly Repository Activity",
+            body: "Here's your weekly summary:\n\n- 5 commits this week\n- 2 pull requests merged\n- 1 new issue opened\n\nView your dashboard: https://github.com/dashboard",
+            isPhishing: false,
+            explanation: "This is a legitimate notification from GitHub with official links and no urgent demands."
+        },
+        {
+            sender: "admin@microsoft.com",
+            subject: "Your Microsoft Account Will Be Deleted",
+            body: "URGENT: Your Microsoft account will be permanently deleted in 24 hours due to inactivity.\n\nClick here immediately to prevent deletion: http://microsoft-account-recovery.com/save\n\nThis is your final warning!",
+            isPhishing: true,
+            explanation: "Microsoft doesn't delete accounts for inactivity, and the domain is fake. Real Microsoft emails come from @microsoft.com."
+        }
+    ];
+
+    // Get current simulation
+    const simulation = emailSimulations[currentQuestion] || emailSimulations[0];
+
+    // Get current result from store
+    const currentResult = getCurrentAnswer(currentQuestion);
 
     const handleChoice = (userChoice) => {
         const isCorrect = (userChoice === 'phishing') === simulation.isPhishing;
-        setResult({
-            isCorrect,
-            message: isCorrect ? 'Correct! Well spotted.' : 'Incorrect. Check the explanation.',
+
+        // Store answer in simulation store
+        answerQuestion(currentQuestion, userChoice, isCorrect);
+
+        // Show notification
+        addNotification({
+            type: isCorrect ? 'success' : 'error',
+            message: isCorrect ? 'Correct! Well spotted.' : 'Incorrect. Check the explanation.'
         });
-        setScore((prev) => prev + (isCorrect ? 20 : 0));
     };
 
     const nextStep = () => {
-        if (step < totalSteps) {
-            setStep(step + 1);
-            setResult(null);
+        if (currentQuestion < totalSteps - 1) {
+            nextQuestion();
+        } else {
+            // Complete the simulation
+            completeSimulation(totalSteps);
+            addNotification({
+                type: 'success',
+                title: 'Simulation Complete!',
+                message: `You scored ${score + (currentResult?.isCorrect ? 1 : 0)} out of ${totalSteps}`
+            });
         }
+    };
+
+    const handleReset = () => {
+        resetSimulation();
+        addNotification({
+            type: 'info',
+            message: 'Simulation reset. Good luck!'
+        });
     };
 
     // Animation Variants
@@ -102,7 +183,7 @@ export default function EmailPhishingSimulation() {
                         </div>
 
                         {/* Choices */}
-                        {!result && (
+                        {!currentResult && (
                             <div className="flex justify-center mb-8 space-x-6">
                                 <button
                                     onClick={() => handleChoice('safe')}
@@ -120,10 +201,10 @@ export default function EmailPhishingSimulation() {
                         )}
 
                         {/* Result */}
-                        {result && (
+                        {currentResult && (
                             <motion.div
                                 className={`p-6 rounded-xl border ${
-                                    result.isCorrect
+                                    currentResult.isCorrect
                                         ? 'bg-green-900/30 border-green-500/50'
                                         : 'bg-red-900/30 border-red-500/50'
                                 }`}
@@ -133,7 +214,7 @@ export default function EmailPhishingSimulation() {
                             >
                                 <div className="flex items-center space-x-4">
                                     <svg
-                                        className={`w-8 h-8 ${result.isCorrect ? 'text-green-400' : 'text-red-400'}`}
+                                        className={`w-8 h-8 ${currentResult.isCorrect ? 'text-green-400' : 'text-red-400'}`}
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -142,12 +223,12 @@ export default function EmailPhishingSimulation() {
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
                                             strokeWidth={2}
-                                            d={result.isCorrect ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}
+                                            d={currentResult.isCorrect ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}
                                         />
                                     </svg>
                                     <div>
-                                        <p className={`text-lg font-semibold ${result.isCorrect ? 'text-green-300' : 'text-red-300'}`}>
-                                            {result.message}
+                                        <p className={`text-lg font-semibold ${currentResult.isCorrect ? 'text-green-300' : 'text-red-300'}`}>
+                                            {currentResult.isCorrect ? 'Correct! Well spotted.' : 'Incorrect. Check the explanation.'}
                                         </p>
                                         <p className="mt-2 text-gray-300">{simulation.explanation}</p>
                                     </div>
@@ -156,7 +237,7 @@ export default function EmailPhishingSimulation() {
                         )}
 
                         {/* Navigation */}
-                        {result && (
+                        {currentResult && (
                             <div className="flex justify-center mt-8 space-x-4">
                                 {step < totalSteps ? (
                                     <button
@@ -166,14 +247,50 @@ export default function EmailPhishingSimulation() {
                                         Next Simulation
                                     </button>
                                 ) : (
-                                    <Link
-                                        href="/simulation/results"
-                                        className="px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
-                                    >
-                                        View Results
-                                    </Link>
+                                    <>
+                                        <Link
+                                            href="/simulation/results"
+                                            className="px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                                        >
+                                            View Results
+                                        </Link>
+                                        <button
+                                            onClick={handleReset}
+                                            className="px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gradient-to-r from-gray-600 to-gray-500 rounded-xl hover:from-gray-700 hover:to-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                        >
+                                            Try Again
+                                        </button>
+                                    </>
                                 )}
                             </div>
+                        )}
+
+                        {/* Completion Summary */}
+                        {isCompleted && (
+                            <motion.div
+                                className="mt-8 p-6 bg-gradient-to-r from-blue-900/50 to-cyan-900/50 rounded-xl border border-cyan-500/30"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                <div className="text-center">
+                                    <h3 className="text-2xl font-bold text-white mb-2">
+                                        Simulation Complete!
+                                    </h3>
+                                    <p className="text-cyan-200 mb-4">
+                                        Final Score: {score} out of {totalSteps} ({Math.round((score / totalSteps) * 100)}%)
+                                    </p>
+                                    <p className="text-gray-300">
+                                        {score === totalSteps
+                                            ? "Perfect! You're a phishing detection expert!"
+                                            : score >= totalSteps * 0.8
+                                            ? "Great job! You have strong phishing detection skills."
+                                            : score >= totalSteps * 0.6
+                                            ? "Good work! Keep practicing to improve your skills."
+                                            : "Keep learning! Practice makes perfect in cybersecurity."}
+                                    </p>
+                                </div>
+                            </motion.div>
                         )}
                     </div>
                 </motion.div>

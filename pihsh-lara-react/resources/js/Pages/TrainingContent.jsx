@@ -1,10 +1,20 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import { useTrainingStore, useUiStore } from '@/stores';
 
 const TrainingContent = () => {
-    const [activeModule, setActiveModule] = useState(null);
+    // Zustand stores
+    const {
+        activeModule,
+        setActiveModule,
+        completeModule,
+        isModuleCompleted,
+        getModuleProgress,
+        getOverallProgress
+    } = useTrainingStore();
+
+    const { addNotification } = useUiStore();
 
     // Training Modules Data
     const trainingModules = [
@@ -124,6 +134,25 @@ const TrainingContent = () => {
                         >
                             Arm yourself with the skills to outsmart cybercriminals through interactive lessons and articles.
                         </motion.p>
+
+                        {/* Overall Progress */}
+                        <motion.div
+                            className="max-w-md mx-auto mt-8"
+                            variants={containerVariants}
+                        >
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-blue-200">Overall Progress</span>
+                                <span className="text-sm font-semibold text-blue-100">{getOverallProgress()}%</span>
+                            </div>
+                            <div className="w-full bg-blue-900/50 rounded-full h-2">
+                                <motion.div
+                                    className="bg-gradient-to-r from-blue-400 to-cyan-400 h-2 rounded-full"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${getOverallProgress()}%` }}
+                                    transition={{ duration: 1, ease: "easeOut" }}
+                                />
+                            </div>
+                        </motion.div>
                     </motion.header>
 
                     {/* Training Modules */}
@@ -173,26 +202,47 @@ const TrainingContent = () => {
                                         animate={activeModule === module.id ? "visible" : "hidden"}
                                     >
                                         <p>{module.details}</p>
-                                        <motion.button
-                                            className="inline-flex items-center gap-2 px-4 py-2 mt-4 text-sm font-semibold text-blue-300 bg-transparent border border-blue-400 rounded-lg hover:bg-blue-400/20"
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            Start Lesson
-                                            <svg
-                                                className="w-4 h-4"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
+                                        <div className="flex items-center justify-between mt-4">
+                                            <motion.button
+                                                className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                                                    isModuleCompleted(module.id)
+                                                        ? 'text-green-300 bg-green-900/20 border border-green-500/50'
+                                                        : 'text-blue-300 bg-transparent border border-blue-400 hover:bg-blue-400/20'
+                                                }`}
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={() => {
+                                                    if (!isModuleCompleted(module.id)) {
+                                                        completeModule(module.id);
+                                                        addNotification({
+                                                            type: 'success',
+                                                            title: 'Module Completed!',
+                                                            message: `You've completed "${module.title}"`
+                                                        });
+                                                    }
+                                                }}
                                             >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                                                />
-                                            </svg>
-                                        </motion.button>
+                                                {isModuleCompleted(module.id) ? 'Completed' : 'Start Lesson'}
+                                                <svg
+                                                    className="w-4 h-4"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d={isModuleCompleted(module.id) ? "M5 13l4 4L19 7" : "M13 7l5 5m0 0l-5 5m5-5H6"}
+                                                    />
+                                                </svg>
+                                            </motion.button>
+
+                                            {/* Progress indicator */}
+                                            <div className="text-xs text-blue-200">
+                                                Progress: {getModuleProgress(module.id)}%
+                                            </div>
+                                        </div>
                                     </motion.div>
                                 </motion.div>
                             ))}

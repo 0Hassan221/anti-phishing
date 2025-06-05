@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Head } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
+import { useUiStore } from '@/stores';
 import { 
     Chart as ChartJS, 
     CategoryScale, 
@@ -81,17 +82,20 @@ const TabButton = ({ active, icon: Icon, label, onClick }) => (
     </button>
 );
 
-export default function Dashboard({ 
-    totalUsers, 
-    totalUrlScans, 
-    totalMalwareScans, 
-    maliciousUrlScans, 
+export default function Dashboard({
+    totalUsers,
+    totalUrlScans,
+    totalMalwareScans,
+    maliciousUrlScans,
     maliciousMalwareScans,
     recentUrlScans,
     recentMalwareScans,
     scanTrends
 }) {
-    const [activeTab, setActiveTab] = useState('overview');
+    // Use UI store for persistent tab state
+    const { dashboardActiveTab, setDashboardActiveTab } = useUiStore();
+    const activeTab = dashboardActiveTab || 'overview';
+    const setActiveTab = setDashboardActiveTab;
 
     const urlScanData = {
         labels: ['Safe', 'Suspicious', 'Malicious'],

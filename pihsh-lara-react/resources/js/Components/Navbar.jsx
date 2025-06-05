@@ -2,24 +2,59 @@ import { useState, useEffect, useRef } from "react";
 import { Link, usePage, router } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Logo from '@/Components/Logo';
+import { useAuthStore, useUiStore } from '@/stores';
 
 const Navbar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const mobileMenuRef = useRef();
     const { props } = usePage(); // Access Inertia page props
 
-    // Extract user name from auth prop
-    const userName = props.auth?.user?.name || "Guest"; // Fallback to "Guest" if not logged in
-    const isLoggedIn = props.auth?.user !== null; // Check if user is logged in
+    // Zustand stores
+    const {
+        user,
+        isAuthenticated,
+        showingNavigationDropdown,
+        setShowingNavigationDropdown,
+        setUser,
+        logout: logoutFromStore
+    } = useAuthStore();
+
+    const {
+        sidebarOpen,
+        setSidebarOpen,
+        addNotification
+    } = useUiStore();
+
+    // Use Zustand state for mobile menu and user menu
+    const isOpen = sidebarOpen;
+    const setIsOpen = setSidebarOpen;
+    const userMenuOpen = showingNavigationDropdown;
+    const setUserMenuOpen = setShowingNavigationDropdown;
+
+    // Sync Inertia auth with Zustand store
+    useEffect(() => {
+        if (props.auth?.user && (!user || user.id !== props.auth.user.id)) {
+            setUser(props.auth.user);
+        } else if (!props.auth?.user && user) {
+            logoutFromStore();
+        }
+    }, [props.auth?.user, user, setUser, logoutFromStore]);
+
+    // Extract user name from store or props
+    const userName = user?.name || props.auth?.user?.name || "Guest";
+    const isLoggedIn = isAuthenticated || props.auth?.user !== null;
 
     // Logout handler
     const handleLogout = () => {
         router.post(route('logout'), {}, {
             onSuccess: () => {
-                setIsOpen(false); // Close mobile menu
-                setUserMenuOpen(false); // Close user menu
+                logoutFromStore(); // Clear Zustand store
+                setSidebarOpen(false); // Close mobile menu
+                setShowingNavigationDropdown(false); // Close user menu
+                addNotification({
+                    type: 'success',
+                    message: 'Logged out successfully'
+                });
             },
         });
     };

@@ -3,9 +3,9 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
-import Navbar from '@/Components/Navbar';
 import { useState } from 'react';
 import Logo from '@/Components/Logo';
+import { useAuthStore, useUiStore } from '@/stores';
 
 export default function Register() {
     const [agreedToTerms, setAgreedToTerms] = useState(false); // State لتتبع موافقة المستخدم
@@ -17,13 +17,37 @@ export default function Register() {
         password_confirmation: '',
     });
 
+    // Zustand stores
+    const { setUser } = useAuthStore();
+    const { addNotification } = useUiStore();
+
     const submit = (e) => {
         e.preventDefault();
         if (!agreedToTerms) {
-            alert("Please agree to the Terms of Use before registering.");
+            addNotification({
+                type: 'warning',
+                message: 'Please agree to the Terms of Use before registering.'
+            });
             return;
         }
         post(route('register'), {
+            onSuccess: (page) => {
+                // Update Zustand store with user data
+                if (page.props.auth?.user) {
+                    setUser(page.props.auth.user);
+                    addNotification({
+                        type: 'success',
+                        title: 'Welcome!',
+                        message: `Account created successfully! Welcome to AntiPhishing, ${page.props.auth.user.name}!`
+                    });
+                }
+            },
+            onError: () => {
+                addNotification({
+                    type: 'error',
+                    message: 'Registration failed. Please check your information and try again.'
+                });
+            },
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
