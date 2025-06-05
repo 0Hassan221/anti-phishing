@@ -241,7 +241,7 @@ export default function UrlCheck() {
                                         <div className="flex items-center space-x-2">
                                             <Link
                                                 href="/url-scan-results"
-                                                className="px-3 py-1 text-xs font-medium text-cyan-300 bg-cyan-900/30 border border-cyan-700/50 rounded-lg hover:bg-cyan-800/40 transition-colors"
+                                                className="px-3 py-1 text-xs font-medium transition-colors border rounded-lg text-cyan-300 bg-cyan-900/30 border-cyan-700/50 hover:bg-cyan-800/40"
                                                 title="View All Results"
                                             >
                                                 View All
@@ -569,9 +569,9 @@ export default function UrlCheck() {
                                     </motion.div>
                                 )}
 
-                                {/* Generate Report Button */}
-                                {scanData && (
-                                    <div className="mt-6">
+                                                                {/* Generate Report Button */}
+                                                                {scanData && (
+                                    <div className="flex flex-col gap-3 mt-6 sm:flex-row">
                                         <button
                                             onClick={handleGenerateReport}
                                             disabled={generatingReport}
@@ -587,8 +587,24 @@ export default function UrlCheck() {
                                             </svg>
                                             {generatingReport ? 'Generating...' : 'Generate PDF Report'}
                                         </button>
+                                        
+                                        <button
+                                            onClick={() => window.open('mailto:teamsecura@gmail.com?subject=Report for URL: ' + encodeURIComponent(url), '_blank')}
+                                            className="flex items-center justify-center w-full px-4 py-3 font-medium text-white transition-all duration-300 border rounded-lg border-yellow-500/50 hover:bg-yellow-800/50 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                                        >
+                                            <svg
+                                                className="w-5 h-5 mr-2"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            </svg>
+                                            Report to Security Team
+                                        </button>
                                     </div>
                                 )}
+
                             </motion.div>
                         )}
 

@@ -260,7 +260,7 @@ const useUrlScanStore = create(
               {
                 label: 'Report False Positive',
                 primary: false,
-                onClick: () => window.open('mailto:security@antiphishing.com?subject=False Positive Report', '_blank')
+                onClick: () => window.open('mailto:teamsecura@gmail.com?subject=False Positive Report', '_blank')
               }
             ]
           };
