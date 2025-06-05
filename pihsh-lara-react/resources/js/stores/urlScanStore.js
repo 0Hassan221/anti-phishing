@@ -6,8 +6,8 @@ import axios from 'axios';
 let uiStore = null;
 const getUiStore = async () => {
   if (!uiStore) {
-    const { useUiStore } = await import('./uiStore');
-    uiStore = useUiStore;
+    const { default: importedUiStore } = await import('./uiStore');
+    uiStore = importedUiStore;
   }
   return uiStore;
 };
@@ -249,6 +249,8 @@ const useUrlScanStore = create(
             url: url,
             scanTime: scanTime,
             fromCache: fromCache,
+            persistent: false,
+            details: true,
             actions: [
               {
                 label: 'View Details',
@@ -284,6 +286,8 @@ const useUrlScanStore = create(
             url: url,
             scanTime: scanTime,
             fromCache: fromCache,
+            persistent: false,
+            details: true,
             actions: [
               {
                 label: 'View Details',
@@ -319,6 +323,8 @@ const useUrlScanStore = create(
             url: url,
             scanTime: scanTime,
             fromCache: fromCache,
+            persistent: false,
+            details: true,
             actions: [
               {
                 label: 'View Details',
@@ -340,15 +346,20 @@ const useUrlScanStore = create(
         // Save to recent scans
         get().saveToRecentScans(url, resultData);
 
-        // Show floating message
         try {
-          const uiStoreModule = await getUiStore();
-          const { addNotification } = uiStoreModule.getState();
-          addNotification(floatingMessage);
+          // Import the store directly from the index.js where it's exported as a named export
+          const { useUiStore } = await import('@/stores');
+          const addNotification = useUiStore.getState().addNotification;
+          
+          // Make sure all required properties are set
+          addNotification({
+            ...floatingMessage,
+            category: 'scan-result',  // Ensure category is set correctly
+            persistent: false,        // Will auto-dismiss after 8 seconds
+          });
         } catch (error) {
           console.error('Failed to show floating message:', error);
-        }
-      },
+        }      },
       
       // Save to recent scans
       saveToRecentScans: (scannedUrl, scanResult) => {
