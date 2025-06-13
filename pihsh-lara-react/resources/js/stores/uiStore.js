@@ -28,9 +28,7 @@ const useUiStore = create((set) => ({
   setSidebarOpen: (value) => set({ sidebarOpen: value }),
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
 
-  // Dashboard state
-  dashboardActiveTab: 'overview',
-  setDashboardActiveTab: (tab) => set({ dashboardActiveTab: tab }),
+
 }));
 
 export default useUiStore;

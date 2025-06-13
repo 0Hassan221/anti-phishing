@@ -1,10 +1,68 @@
-import React from 'react';
-import { Head } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { Head, router } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Link } from '@inertiajs/react';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, EyeIcon, UserPlusIcon } from '@heroicons/react/24/outline';
+import Modal from '@/Components/Modal';
+import DangerButton from '@/Components/DangerButton';
+import SecondaryButton from '@/Components/SecondaryButton';
+import TextInput from '@/Components/TextInput';
 
-export default function UsersIndex({ users }) {
+export default function UsersIndex({ users, filters = {} }) {
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
+    const [searchTerm, setSearchTerm] = useState(filters.search || '');
+    const [roleFilter, setRoleFilter] = useState(filters.role || '');
+
+    const confirmUserDeletion = (user) => {
+        setUserToDelete(user);
+        setDeleteModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setDeleteModalOpen(false);
+        setUserToDelete(null);
+    };
+
+    const deleteUser = () => {
+        if (userToDelete) {
+            router.delete(route('admin.users.destroy', userToDelete.id), {
+                onSuccess: () => {
+                    closeModal();
+                }
+            });
+        }
+    };
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        router.get(
+            route('admin.users.index'),
+            { search: searchTerm, role: roleFilter },
+            { preserveState: true, preserveScroll: true }
+        );
+    };
+
+    const clearFilters = () => {
+        setSearchTerm('');
+        setRoleFilter('');
+        router.get(
+            route('admin.users.index'),
+            {},
+            { preserveState: true }
+        );
+    };
+
+    const handleRoleChange = (e) => {
+        const role = e.target.value;
+        setRoleFilter(role);
+        router.get(
+            route('admin.users.index'),
+            { search: searchTerm, role: role },
+            { preserveState: true, preserveScroll: true }
+        );
+    };
+
     return (
         <AdminLayout>
             <Head title="Users Management" />
@@ -17,10 +75,69 @@ export default function UsersIndex({ users }) {
                                 <h2 className="text-2xl font-bold text-white">Users Management</h2>
                                 <Link
                                     href={route('admin.users.create')}
-                                    className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition-colors duration-300"
+                                    className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition-colors duration-300 flex items-center space-x-2"
                                 >
-                                    Add New User
+                                    <UserPlusIcon className="h-5 w-5" />
+                                    <span>Add New User</span>
                                 </Link>
+                            </div>
+
+                            {/* Search and Filter Section */}
+                            <div className="mb-6 bg-gray-700/50 p-4 rounded-lg">
+                                <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
+                                    <div className="flex-1">
+                                        <TextInput
+                                            type="text"
+                                            placeholder="Search by name or email..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                                        />
+                                    </div>
+                                    <div className="md:w-48">
+                                        <select
+                                            value={roleFilter}
+                                            onChange={handleRoleChange}
+                                            className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                                        >
+                                            <option value="">All Roles</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="user">User</option>
+                                        </select>
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors duration-200"
+                                        >
+                                            Search
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={clearFilters}
+                                            className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-500 transition-colors duration-200"
+                                        >
+                                            Clear
+                                        </button>
+                                    </div>
+                                </form>
+
+                                {/* Active Filters Display */}
+                                {(filters.search || filters.role) && (
+                                    <div className="mt-3 flex flex-wrap gap-2">
+                                        <span className="text-gray-400">Active filters:</span>
+                                        {filters.search && (
+                                            <span className="bg-cyan-900/50 text-cyan-300 px-2 py-1 rounded-full text-xs">
+                                                Search: {filters.search}
+                                            </span>
+                                        )}
+                                        {filters.role && (
+                                            <span className="bg-cyan-900/50 text-cyan-300 px-2 py-1 rounded-full text-xs">
+                                                Role: {filters.role === 'admin' ? 'Admin' : 'User'}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             <div className="overflow-x-auto">
@@ -60,20 +177,29 @@ export default function UsersIndex({ users }) {
                                                     {user.malware_scans_count}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                    <Link
-                                                        href={route('admin.users.edit', user.id)}
-                                                        className="text-cyan-400 hover:text-cyan-300 mr-4 transition-colors duration-200"
-                                                    >
-                                                        <PencilIcon className="h-5 w-5 inline" />
-                                                    </Link>
-                                                    <Link
-                                                        href={route('admin.users.destroy', user.id)}
-                                                        method="delete"
-                                                        as="button"
-                                                        className="text-red-400 hover:text-red-300 transition-colors duration-200"
-                                                    >
-                                                        <TrashIcon className="h-5 w-5 inline" />
-                                                    </Link>
+                                                    <div className="flex items-center space-x-3">
+                                                        <Link
+                                                            href={route('admin.users.show', user.id)}
+                                                            className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                                                            title="View User"
+                                                        >
+                                                            <EyeIcon className="h-5 w-5" />
+                                                        </Link>
+                                                        <Link
+                                                            href={route('admin.users.edit', user.id)}
+                                                            className="text-cyan-400 hover:text-cyan-300 transition-colors duration-200"
+                                                            title="Edit User"
+                                                        >
+                                                            <PencilIcon className="h-5 w-5" />
+                                                        </Link>
+                                                        <button
+                                                            onClick={() => confirmUserDeletion(user)}
+                                                            className="text-red-400 hover:text-red-300 transition-colors duration-200"
+                                                            title="Delete User"
+                                                        >
+                                                            <TrashIcon className="h-5 w-5" />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
@@ -103,6 +229,29 @@ export default function UsersIndex({ users }) {
                     </div>
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            <Modal show={deleteModalOpen} onClose={closeModal}>
+                <div className="p-6">
+                    <h2 className="text-lg font-medium text-gray-900 mb-4">
+                        Delete User
+                    </h2>
+
+                    <p className="text-sm text-gray-600 mb-6">
+                        Are you sure you want to delete <strong>{userToDelete?.name}</strong>?
+                        This action cannot be undone and will permanently remove the user and all associated data.
+                    </p>
+
+                    <div className="flex justify-end space-x-3">
+                        <SecondaryButton onClick={closeModal}>
+                            Cancel
+                        </SecondaryButton>
+                        <DangerButton onClick={deleteUser}>
+                            Delete User
+                        </DangerButton>
+                    </div>
+                </div>
+            </Modal>
         </AdminLayout>
     );
-} 
+}

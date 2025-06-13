@@ -23,7 +23,7 @@ const Services = memo(() => {
             title: "Phishing Email Detection",
             description: "Advanced algorithms detect phishing emails, safeguarding users from deceptive scams.",
             image: "/assets/email.jpg",
-            link: "/url-check",
+            link: "/email-check",
             category: "protection",
             icon: "mail-warning"
         },
@@ -41,7 +41,7 @@ const Services = memo(() => {
             title: "Real-Time Alerts",
             description: "Instant notifications of phishing attempts, empowering rapid threat response.",
             image: "/assets/alert.jpg",
-            link: "/alerts",
+            link: "/firefox-extension",
             category: "monitoring",
             icon: "bell"
         },

@@ -12,7 +12,8 @@ import {
     DocumentTextIcon,
     BellIcon,
     Cog6ToothIcon,
-    ArrowRightOnRectangleIcon
+    ArrowRightOnRectangleIcon,
+    ChartBarIcon
 } from '@heroicons/react/24/outline';
 import { Transition } from '@headlessui/react';
 import Logo from '@/Components/Logo';
@@ -45,6 +46,12 @@ export default function AdminLayout({ children }) {
             href: route('admin.scans.malware'),
             current: route().current('admin.scans.malware'),
             icon: DocumentTextIcon
+        },
+        {
+            name: 'Reports',
+            href: route('admin.reports.contacts'),
+            current: route().current('admin.reports.*'),
+            icon: ChartBarIcon
         }
     ];
 

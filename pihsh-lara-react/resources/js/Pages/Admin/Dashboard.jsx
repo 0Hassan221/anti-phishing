@@ -1,7 +1,6 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
-import { useUiStore } from '@/stores';
 import { 
     Chart as ChartJS, 
     CategoryScale, 
@@ -24,8 +23,6 @@ import {
     DocumentTextIcon,
     ArrowTrendingUpIcon,
     ArrowTrendingDownIcon,
-    CalendarIcon,
-    ChartPieIcon,
     ChartBarIcon
 } from '@heroicons/react/24/outline';
 
@@ -68,19 +65,7 @@ const StatCard = ({ title, value, icon: Icon, trend, trendValue, trendType }) =>
     </div>
 );
 
-const TabButton = ({ active, icon: Icon, label, onClick }) => (
-    <button
-        className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium ${
-            active 
-            ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' 
-            : 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-300'
-        }`}
-        onClick={onClick}
-    >
-        <Icon className="w-5 h-5 mr-2" />
-        {label}
-    </button>
-);
+
 
 export default function Dashboard({
     totalUsers,
@@ -92,10 +77,6 @@ export default function Dashboard({
     recentMalwareScans,
     scanTrends
 }) {
-    // Use UI store for persistent tab state
-    const { dashboardActiveTab, setDashboardActiveTab } = useUiStore();
-    const activeTab = dashboardActiveTab || 'overview';
-    const setActiveTab = setDashboardActiveTab;
 
     const urlScanData = {
         labels: ['Safe', 'Suspicious', 'Malicious'],
@@ -278,34 +259,11 @@ export default function Dashboard({
             <div className="py-8">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     {/* Header with greeting and date */}
-                    <div className="flex flex-col mb-6 md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold text-white">Security Dashboard</h1>
-                            <p className="mt-1 text-gray-400">
-                                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                            </p>
-                        </div>
-                        
-                        <div className="flex mt-4 space-x-3 md:mt-0">
-                            <TabButton 
-                                active={activeTab === 'overview'} 
-                                icon={ChartPieIcon} 
-                                label="Overview" 
-                                onClick={() => setActiveTab('overview')}
-                            />
-                            <TabButton 
-                                active={activeTab === 'analytics'} 
-                                icon={ChartBarIcon} 
-                                label="Analytics" 
-                                onClick={() => setActiveTab('analytics')}
-                            />
-                            <TabButton 
-                                active={activeTab === 'reports'} 
-                                icon={CalendarIcon} 
-                                label="Reports" 
-                                onClick={() => setActiveTab('reports')}
-                            />
-                        </div>
+                    <div className="mb-6">
+                        <h1 className="text-3xl font-bold text-white">Security Dashboard</h1>
+                        <p className="mt-1 text-gray-400">
+                            {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                        </p>
                     </div>
 
                     {/* Main dashboard content */}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contact;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,7 +11,7 @@ class ContactController extends Controller
     public function show()
     {
         // Return the contact page if you have one
-        return Inertia::render('home/Contact'); // Adjust to your actual component/page
+        return Inertia::render('home/ContactUs');
     }
 
     public function store(Request $request)
@@ -22,11 +23,16 @@ class ContactController extends Controller
             'message' => 'required|string|max:1000',
         ]);
 
-        // Handle the data (e.g., save to DB or send email)
-        // For now, just return success
-        // Example: Mail::to('admin@example.com')->send(new ContactMail($validated));
+        // Save contact submission to database
+        Contact::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'message' => $validated['message'],
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'status' => 'unread',
+        ]);
 
         return redirect()->back()->with('success', 'Message sent successfully!');
     }
 }
-/*************/

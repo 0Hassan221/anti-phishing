@@ -17,14 +17,45 @@ class UserManagementController extends Controller
         $this->middleware(['auth', \App\Http\Middleware\AdminAccessMiddleware::class]);
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $users = User::withCount(['urlScans', 'malwareScans'])
-            ->latest()
-            ->paginate(10);
+        $query = User::withCount(['urlScans', 'malwareScans']);
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by role
+        if ($request->filled('role')) {
+            $role = $request->get('role');
+            if ($role === 'admin') {
+                $query->where('is_admin', true);
+            } elseif ($role === 'user') {
+                $query->where('is_admin', false);
+            }
+        }
+
+        // Sort functionality
+        $sortField = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+
+        $allowedSorts = ['name', 'email', 'created_at', 'url_scans_count', 'malware_scans_count'];
+        if (in_array($sortField, $allowedSorts)) {
+            $query->orderBy($sortField, $sortDirection);
+        } else {
+            $query->latest();
+        }
+
+        $users = $query->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
+            'filters' => $request->only(['search', 'role', 'sort', 'direction']),
         ]);
     }
 

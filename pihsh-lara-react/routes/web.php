@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
 });
 
 //********** */
-Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
+Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 //********** */
 
@@ -42,14 +42,15 @@ Route::get('/about', function () {
     return Inertia::render('AboutUs');
 })->name('about');
 
-Route::get('/contact', function () {
-    return Inertia::render('home/ContactUs');
-})->name('contact');
-
 Route::get('/url-check', [UrlScanController::class, 'show'])->name('url.check');
 Route::post('/url-scan', [UrlScanController::class, 'scan'])->name('url.scan');
 Route::post('/url-status', [UrlScanController::class, 'checkStatus'])->name('url.status');
 Route::match(['get', 'post'], '/url-report', [UrlScanController::class, 'generateReport'])->name('url.report');
+
+// Email Check route
+Route::get('/email-check', function () {
+    return Inertia::render('EmailCheck/EmailCheck');
+})->name('email.check');
 
 // URL Scan Results Page
 Route::get('/url-scan-results', function () {
@@ -100,6 +101,11 @@ Route::get('/simulation/results', function () {
         'totalSteps' => 5,
     ]);
 })->name('simulation.results');
+
+// Firefox Extension route
+Route::get('/firefox-extension', function () {
+    return Inertia::render('FirefoxExtension');
+})->name('firefox.extension');
 
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
