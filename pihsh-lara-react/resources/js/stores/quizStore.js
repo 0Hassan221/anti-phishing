@@ -6,6 +6,7 @@ const useQuizStore = create((set, get) => ({
   currentQuestion: 0,
   score: 0,
   quizCompleted: false,
+  answers: [],
   
   // Quiz questions
   questions: [
@@ -35,30 +36,77 @@ const useQuizStore = create((set, get) => ({
   // Handle answer
   handleAnswer: (answer) => {
     return new Promise((resolve) => {
-        const { currentQuestion, questions, score } = get();
+        const { currentQuestion, questions, score, answers } = get();
+        const isCorrect = answer === questions[currentQuestion].correctAnswer;
         
-        if (answer === questions[currentQuestion].correctAnswer) {
+        // Store the answer
+        const newAnswers = [...answers];
+        newAnswers[currentQuestion] = {
+          question: questions[currentQuestion].question,
+          answer,
+          correct: isCorrect
+        };
+        
+        if (isCorrect) {
             set({ score: score + 1 });
         }
         
-        if (currentQuestion + 1 < questions.length) {
-            set({ currentQuestion: currentQuestion + 1 });
-        }
+        const isLastQuestion = currentQuestion === questions.length - 1;
+        
+        set({ 
+            answers: newAnswers,
+            currentQuestion: isLastQuestion ? currentQuestion : currentQuestion + 1,
+            quizCompleted: isLastQuestion
+        });
         
         resolve();
     });
-},
+  },
 
-resetQuiz: () => {
+  // Get quiz results
+  getQuizResults: () => {
+    const { score, questions, answers } = get();
+    const totalQuestions = questions.length;
+    const percentage = (score / totalQuestions) * 100;
+    
+    let feedback;
+    if (percentage === 100) {
+      feedback = "Excellent! You're well-prepared to identify phishing attempts!";
+    } else if (percentage >= 70) {
+      feedback = "Good job! You have a solid understanding of phishing awareness, but there's room for improvement.";
+    } else {
+      feedback = "You might want to review the phishing awareness materials. Stay vigilant!";
+    }
+
+    // Get answer breakdown
+    const answerBreakdown = answers.map((answer, index) => ({
+      question: questions[index].question,
+      description: questions[index].description,
+      userAnswer: answer.answer,
+      correctAnswer: questions[index].correctAnswer,
+      isCorrect: answer.correct
+    }));
+
+    return {
+      score,
+      totalQuestions,
+      percentage,
+      feedback,
+      answerBreakdown
+    };
+  },
+
+  resetQuiz: () => {
     return new Promise((resolve) => {
         set({
             currentQuestion: 0,
             score: 0,
-            quizCompleted: false
+            quizCompleted: false,
+            answers: []
         });
         resolve();
     });
-},
+  },
 }));
 
 export default useQuizStore;

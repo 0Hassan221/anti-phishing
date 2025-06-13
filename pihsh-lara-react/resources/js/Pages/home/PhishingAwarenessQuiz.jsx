@@ -5,9 +5,10 @@ const PhishingAwarenessQuiz = () => {
     const {
         currentQuestion,
         score,
-        isCompleted,
+        quizCompleted, // Changed from isCompleted to quizCompleted
         handleAnswer,
-        resetQuiz: resetQuizStore
+        resetQuiz: resetQuizStore,
+        getQuizResults
     } = useQuizStore();
 
     const { activeModal, setActiveModal, closeModal } = useUiStore();
@@ -37,8 +38,7 @@ const PhishingAwarenessQuiz = () => {
 
     const onAnswerSubmit = async (answer) => {
         try {
-            const isCorrect = answer === quizQuestions[currentQuestion].correctAnswer;
-            await handleAnswer(answer);  // Wait for the store update to complete
+            await handleAnswer(answer);
         } catch (error) {
             console.error('Error handling answer:', error);
         }
@@ -122,7 +122,7 @@ const PhishingAwarenessQuiz = () => {
                             exit="exit"
                             variants={modalVariants}
                         >
-                            <div className="relative w-full max-w-lg p-6 bg-white border shadow-xl dark:bg-gray-800 rounded-xl backdrop-blur-sm border-blue-900/20 dark:border-gray-700">
+                            <div className="relative w-full max-w-2xl p-6 overflow-y-auto bg-white border shadow-xl dark:bg-gray-800 rounded-xl backdrop-blur-sm border-blue-900/20 dark:border-gray-700 max-h-[90vh]">
                                 <button
                                     onClick={closeModal}
                                     className="absolute text-blue-900 top-4 right-4 dark:text-white hover:text-blue-700"
@@ -143,7 +143,7 @@ const PhishingAwarenessQuiz = () => {
                                 </button>
 
                                 <div className="text-center">
-                                    {currentQuestion < quizQuestions.length ? (
+                                    {!quizCompleted ? (
                                         <>
                                             <h3 className="mb-4 text-xl font-semibold text-blue-900 dark:text-white">
                                                 Question {currentQuestion + 1} of {quizQuestions.length}
@@ -167,22 +167,68 @@ const PhishingAwarenessQuiz = () => {
                                             </div>
                                         </>
                                     ) : (
-                                        <div className="space-y-6">
+                                        <div className="space-y-8">
                                             <h3 className="text-2xl font-bold text-blue-900 dark:text-white">
                                                 Quiz Results
                                             </h3>
-                                            <div className="p-6 bg-blue-50 dark:bg-gray-700 rounded-xl">
-                                                <p className="text-3xl font-bold text-blue-900 dark:text-white">
-                                                    {score} / {quizQuestions.length}
-                                                </p>
-                                                <p className="mt-2 text-lg text-blue-900/80 dark:text-gray-200">
-                                                    {score === quizQuestions.length
-                                                        ? "Excellent! You're a phishing detection expert! 🏆"
-                                                        : score >= quizQuestions.length / 2
-                                                        ? "Good job! Keep learning to become even better at detecting phishing attempts! 📚"
-                                                        : "Keep practicing! Learning to detect phishing attempts is crucial for online safety. 💪"}
+                                            
+                                            {/* Score Overview */}
+                                            <div className="p-6 text-left bg-blue-50 dark:bg-gray-700 rounded-xl">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <p className="text-3xl font-bold text-blue-900 dark:text-white">
+                                                        Score: {getQuizResults().score} / {getQuizResults().totalQuestions}
+                                                    </p>
+                                                    <p className="text-2xl font-semibold text-blue-900 dark:text-white">
+                                                        {getQuizResults().percentage}%
+                                                    </p>
+                                                </div>
+                                                <div className="w-full h-3 mb-4 bg-blue-200 rounded-full dark:bg-gray-600">
+                                                    <div 
+                                                        className="h-3 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"
+                                                        style={{ width: `${getQuizResults().percentage}%` }}
+                                                    />
+                                                </div>
+                                                <p className="text-lg text-blue-900/80 dark:text-gray-200">
+                                                    {getQuizResults().feedback}
                                                 </p>
                                             </div>
+
+                                            {/* Detailed Breakdown */}
+                                            <div className="px-4 py-6 space-y-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                                                <h4 className="mb-4 text-lg font-semibold text-blue-900 dark:text-white">
+                                                    Detailed Breakdown
+                                                </h4>
+                                                {getQuizResults().answerBreakdown.map((item, index) => (
+                                                    <div 
+                                                        key={index}
+                                                        className="p-4 transition-colors bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700"
+                                                    >
+                                                        <div className="flex items-start justify-between gap-4">
+                                                            <div>
+                                                                <p className="font-medium text-blue-900 dark:text-white">
+                                                                    {item.question}
+                                                                </p>
+                                                                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                                                    {item.description}
+                                                                </p>
+                                                            </div>
+                                                            <div className={`px-3 py-1 text-sm font-medium rounded-full ${
+                                                                item.isCorrect
+                                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                                            }`}>
+                                                                {item.isCorrect ? 'Correct' : 'Incorrect'}
+                                                            </div>
+                                                        </div>
+                                                        {!item.isCorrect && (
+                                                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                                                Correct answer: <span className="font-medium text-blue-600 dark:text-blue-400">{item.correctAnswer}</span>
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+
                                             <div className="flex justify-center gap-4">
                                                 <button
                                                     onClick={handleResetQuiz}
