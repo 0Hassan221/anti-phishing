@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\UrlScanController;
 use App\Http\Controllers\MalwareDetectionController;
+use App\Http\Controllers\CyberNewsController;
 //********** */
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +31,7 @@ Route::middleware('auth')->group(function () {
 });
 
 //********** */
-Route::get('/contact', [ContactController::class, 'show'])->name('contact');
+Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 //********** */
 
@@ -42,6 +43,9 @@ Route::get('/about', function () {
     return Inertia::render('AboutUs');
 })->name('about');
 
+Route::get('/contact', function () {
+    return Inertia::render('home/ContactUs');
+})->name('contact');
 Route::get('/url-check', [UrlScanController::class, 'show'])->name('url.check');
 Route::post('/url-scan', [UrlScanController::class, 'scan'])->name('url.scan');
 Route::post('/url-status', [UrlScanController::class, 'checkStatus'])->name('url.status');
@@ -72,6 +76,8 @@ Route::get('/malware-api-test', [MalwareDetectionController::class, 'testApiConn
 Route::get('/training', function () {
     return Inertia::render('TrainingContent');
 })->name('training');
+
+Route::get('/updates', [CyberNewsController::class, 'index'])->name('updates');
 
 Route::get('/terms-of-use', function () {
     return Inertia::render('TermsOfUse');
