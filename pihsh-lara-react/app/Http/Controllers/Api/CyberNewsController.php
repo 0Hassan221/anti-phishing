@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 
 class CyberNewsController extends Controller
@@ -16,7 +16,8 @@ class CyberNewsController extends Controller
             $response = Http::withOptions([
                 'verify' => false,
             ])->get('https://newsapi.org/v2/everything', [
-                'q' => 'cybersecurity OR phishing OR hacking',
+                'q' => '(cybersecurity OR "cyber security" OR phishing OR "phishing attack")',
+                'searchIn' => 'title',
                 'sortBy' => 'publishedAt',
                 'language' => 'en',
                 'pageSize' => 5,
@@ -45,18 +46,6 @@ class CyberNewsController extends Controller
         }
     }
 
-    public function index()
-    {
-        $news = $this->fetchNews();
-        $tip = 'Think before you click: Hover over links to see where they lead.';
-        
-        return Inertia::render('Updates', [
-            'news' => $news,
-            'tip' => $tip,
-            'error' => empty($news) ? 'Failed to fetch news. Please try again later.' : null
-        ]);
-    }
-
     public function getNews()
     {
         $news = $this->fetchNews();
@@ -67,4 +56,4 @@ class CyberNewsController extends Controller
         
         return response()->json(['articles' => $news]);
     }
-}
+} 

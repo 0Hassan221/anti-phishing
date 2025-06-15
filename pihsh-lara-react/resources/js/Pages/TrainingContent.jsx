@@ -160,38 +160,9 @@ const TrainingContent = () => {
   const [feedbackStatus, setFeedbackStatus] = useState(null);
 
   useEffect(() => {
-    // Fetch training content
     axios.get('http://127.0.0.1:8000/api/training-contents')
       .then(response => setContents(response.data))
       .catch(error => console.error('Error fetching training content:', error));
-
-    // Fetch security news
-    const fetchNews = async () => {
-      try {
-        setNewsLoading(true);
-        console.log('Fetching news...');
-        const response = await axios.get('http://127.0.0.1:8000/api/news');
-        console.log('News API Response:', response.data);
-        if (response.data.status === 'ok') {
-          const formatted = response.data.articles.map(article => ({
-            title: article.title || 'No title',
-            description: article.description || 'No description',
-            url: article.url || '#',
-            publishedAt: article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : 'No date',
-            image: article.urlToImage || 'https://via.placeholder.com/150',
-          }));
-          console.log('Formatted News:', formatted);
-          setNews(formatted);
-        }
-      } catch (error) {
-        console.error('Error fetching news:', error);
-        setNewsError('Failed to fetch news. Please try again later.');
-      } finally {
-        setNewsLoading(false);
-      }
-    };
-
-    fetchNews();
   }, []);
 
   // Persist completion state to localStorage
@@ -243,29 +214,14 @@ const TrainingContent = () => {
       setNewsLoading(true);
       setNewsError(null);
       
-      // Using NewsAPI for reliable news fetching
-      axios.get('https://newsapi.org/v2/top-headlines', {
-        params: {
-          category: 'technology',
-          language: 'en',
-          pageSize: 5,
-          apiKey: '4f055572ac4748fea003a4c4df60794', // Your NewsAPI key
-        },
-      })
+      // Using the API endpoint for news
+      axios.get('/api/news')
         .then(res => {
           if (res.data.articles && res.data.articles.length > 0) {
-            const formattedNews = res.data.articles.map(article => ({
-              title: article.title,
-              description: article.description,
-              url: article.url,
-              image: article.urlToImage || 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80',
-              publishedAt: new Date(article.publishedAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })
-            }));
-            setNews(formattedNews);
+            // The articles are already formatted correctly from the API
+            setNews(res.data.articles);
+            // Set a random security tip
+            setTip(SECURITY_TIPS[Math.floor(Math.random() * SECURITY_TIPS.length)]);
           } else {
             setNewsError('No recent security news available.');
           }
@@ -273,22 +229,9 @@ const TrainingContent = () => {
         })
         .catch(err => {
           console.error('Error fetching news:', err);
-          if (err.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            setNewsError(`Error: ${err.response.data.message || 'Failed to fetch news'}`);
-          } else if (err.request) {
-            // The request was made but no response was received
-            setNewsError('No response from server. Please check your internet connection.');
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            setNewsError('Unable to fetch recent security news. Please try again later.');
-          }
+          setNewsError(err.response?.data?.error || 'Failed to fetch news. Please try again later.');
           setNewsLoading(false);
         });
-      
-      // Pick a random tip
-      setTip(SECURITY_TIPS[Math.floor(Math.random() * SECURITY_TIPS.length)]);
     }
   }, [activeTab]);
 
@@ -328,10 +271,10 @@ const TrainingContent = () => {
             <div className="flex flex-col items-center gap-4">
               <div className="flex flex-wrap justify-center gap-4">
                 {[
-                  { id: 'awareness', label: 'Awareness', icon: BookOpen, description: 'Master the fundamentals of phishing defense through expert-led security protocols and best practices' },
-                  { id: 'modules', label: 'Modules', icon: GraduationCap, description: 'Structured learning pathways designed to enhance your cybersecurity knowledge and skills' },
+                  { id: 'awareness', label: 'Awareness', icon: BookOpen, description: 'Master the fundamentals of phishing defense through expert-led security protocols and best practices' },       
                   { id: 'articles', label: 'Articles', icon: Newspaper, description: 'In-depth analysis of emerging cyber threats and advanced defense methodologies' },
                   { id: 'videos', label: 'Videos', icon: Video, description: 'Expert-led demonstrations and real-world scenarios showcasing effective threat mitigation strategies' },
+                  { id: 'modules', label: 'Modules', icon: GraduationCap, description: 'Structured learning pathways designed to enhance your cybersecurity knowledge and skills' },
                   { id: 'progress', label: 'Progress', icon: BarChart3, description: 'Comprehensive analytics dashboard for monitoring your cybersecurity training advancement' },
                   { id: 'updates', label: 'Updates', icon: Shield, description: 'Real-time security intelligence and critical threat advisories' }
                 ].map(tab => (
@@ -368,14 +311,14 @@ const TrainingContent = () => {
           {/* Main Content Area */}
           <div className="w-full mt-8">
             {activeTab === 'awareness' && (
-              <AwarenessSection 
+              <AwarenessSection
                 completedAwareness={completedAwareness}
                 handleCompleteAwareness={handleCompleteAwareness}
               />
             )}
 
             {activeTab === 'modules' && (
-              <ModulesSection 
+              <ModulesSection
                 contents={contents}
                 validCompletedModules={validCompletedModules}
                 handleCompleteModule={handleCompleteModule}
@@ -383,7 +326,7 @@ const TrainingContent = () => {
             )}
 
             {activeTab === 'articles' && (
-              <ArticlesSection 
+              <ArticlesSection
                 securityAwarenessBlogs={securityAwarenessBlogs}
                 phishingAwarenessBlogs={phishingAwarenessBlogs}
                 validCompletedArticles={validCompletedArticles}
@@ -392,7 +335,7 @@ const TrainingContent = () => {
             )}
 
             {activeTab === 'videos' && (
-              <VideosSection 
+              <VideosSection
                 contents={contents}
                 validCompletedVideos={validCompletedVideos}
                 handleCompleteVideo={handleCompleteVideo}
@@ -426,19 +369,16 @@ const TrainingContent = () => {
             )}
 
             {activeTab === 'updates' && (
-              <>
-                {console.log('Rendering Updates tab with news:', news)}
-                <UpdatesSection
-                  tip={SECURITY_TIPS[Math.floor(Math.random() * SECURITY_TIPS.length)]}
-                  news={news}
-                  newsLoading={newsLoading}
-                  newsError={newsError}
-                  feedback={feedback}
-                  setFeedback={setFeedback}
-                  handleFeedbackSubmit={handleFeedbackSubmit}
-                  feedbackStatus={feedbackStatus}
-                />
-              </>
+              <UpdatesSection
+                tip={tip}
+                news={news}
+                newsLoading={newsLoading}
+                newsError={newsError}
+                feedback={feedback}
+                setFeedback={setFeedback}
+                handleFeedbackSubmit={handleFeedbackSubmit}
+                feedbackStatus={feedbackStatus}
+              />
             )}
           </div>
         </div>

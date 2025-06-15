@@ -16,8 +16,6 @@ const UpdatesSection = ({
   handleFeedbackSubmit,
   feedbackStatus,
 }) => {
-  console.log('UpdatesSection props:', { tip, news, newsLoading, newsError });
-  
   return (
     <div className="bg-[#22304a] rounded-2xl shadow-xl p-6 border border-blue-900 w-full mb-8">
       <h1 className="text-3xl md:text-4xl font-extrabold mb-8 text-blue-100 flex items-center gap-3">
