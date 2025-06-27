@@ -75,7 +75,7 @@ Route::get('/malware-api-test', [MalwareDetectionController::class, 'testApiConn
 
 Route::get('/training', function () {
     return Inertia::render('TrainingContent');
-})->name('training');
+})->middleware(['auth', 'verified'])->name('training');
 
 Route::get('/updates', [CyberNewsController::class, 'index'])->name('updates');
 
